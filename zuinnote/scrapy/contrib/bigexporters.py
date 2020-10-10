@@ -302,7 +302,7 @@ class AvroItemExporter(BaseItemExporter):
                 # reset written entries
                 self.itemcount=0
                 # write cache to avro file
-                fa_writer(self.file, self.avro_parsedschema,records,codec=self.avro_compression,sync_interval=self.avro_syncinterval,metadata=self.avro_metadata,validator=self.avro_validator,sync_marker=self.avro_syncmarker,codec_compression_level=self.avro_compressionlevel)
+                fa_writer(self.file, self.avro_parsedschema,self.records,codec=self.avro_compression,sync_interval=self.avro_syncinterval,metadata=self.avro_metadata,validator=self.avro_validator,sync_marker=self.avro_syncmarker,codec_compression_level=self.avro_compressionlevel)
                 # initialize new record cache
                 self.records=[]
 
