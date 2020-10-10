@@ -276,6 +276,7 @@ class AvroItemExporter(BaseItemExporter):
             self.avro_schemastring=''
         if self.avro_schemastring=='':
             raise RuntimeError("No avro schema defined")
+        self.avro_parsedschema=None
         self.avro_validator=self.settings.get('EXPORTER_AVRO_VALIDATOR')
         self.avro_syncinterval=self.settings.get('EXPORTER_AVRO_SYNCINTERVAL')
         if self.avro_syncinterval is None:
