@@ -87,7 +87,7 @@ except ImportError:
     SUPPORTED_EXPORTERS['parquet']=False
 
 try:
-    from fastavro import writer as fa_writer, parse_scehma as fa_parse_schema
+    from fastavro import writer as fa_writer, parse_schema as fa_parse_schema
     SUPPORTED_EXPORTERS['avro']=True
     logging.getLogger().info("Successfully imported fastavro. Export to avro supported.")
 except ImportError:
@@ -285,8 +285,6 @@ class AvroItemExporter(BaseItemExporter):
         if self.avro_recordcache is None:
             self.avro_recordcache=10000
         self.avro_metadata=self.settings.get('EXPORTER_AVRO_METADATA')
-        # Open output file
-        self.out=open(self.file, 'wb')
 
     def finish_exporting(self):
         """
@@ -294,8 +292,6 @@ class AvroItemExporter(BaseItemExporter):
         """
         # flush last items from records cache
         self._flush_table()
-        # Close file on writing
-        self.out.close()
 
     def _flush_table(self):
             """
@@ -305,7 +301,7 @@ class AvroItemExporter(BaseItemExporter):
                 # reset written entries
                 self.itemcount=0
                 # write cache to avro file
-                fa_writer(self.out, self.avro_parsedschema,records,codec=self.avro_compression,sync_interval=self.avro_syncinterval,metadata=self.avro_metadata,validator=self.avro_validator,sync_marker=self.avro_syncmarker,codec_compression_level=self.avro_compressionlevel)
+                fa_writer(self.file, self.avro_parsedschema,records,codec=self.avro_compression,sync_interval=self.avro_syncinterval,metadata=self.avro_metadata,validator=self.avro_validator,sync_marker=self.avro_syncmarker,codec_compression_level=self.avro_compressionlevel)
                 # initialize new record cache
                 self.records=[]
 
