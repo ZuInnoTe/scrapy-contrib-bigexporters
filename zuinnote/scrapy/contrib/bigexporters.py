@@ -251,7 +251,7 @@ class AvroItemExporter(BaseItemExporter):
         if self.itemcount>self.avro_recordcache:
                 self._flush_table()
         record=self._get_dict_from_item(item)
-        records.append(record)
+        self.records.append(record)
         self.itemcount+=1
         return item
 
