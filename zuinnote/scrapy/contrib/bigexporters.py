@@ -37,7 +37,7 @@ EXPORTER_PARQUET_HASNULLS = True # can contain nulls
 EXPORTER_PARQUET_ROWGROUPOFFSET = 50000000 # offset row groups
 EXPORTER_PARQUET_ITEMS_ROWGROUP = 10000  # how many items per rowgroup, should be several thousands, e.g. between 5,000 and 30,000. The more rows the higher the memory consumption and the better the compression on the final parquet file
 Custom parquet feed exporter
-FEED_EXPORTERS={'parquet': 'zuinnote.contrib.bigexporters.ParquetItemExporter'} # register additional format
+FEED_EXPORTERS={'parquet': 'zuinnote.scrapy.contrib.bigexporters.ParquetItemExporter'} # register additional format
 Example local file:
 FEEDS = {'data-%(name)s-%(time)s.parquet': {'format':'parquet','encoding':'utf8',store_empty': False}} # store as local file containing spider name and scrape datetime, e.g. data-quotes-2020-01-01T10-00-00.parquet
 Example s3 file:
@@ -60,7 +60,7 @@ EXPORTER_AVRO_CONVERTALLSTRINGS = False # convert all values to string (ignored 
 EXPORTER_AVRO_SCHEMASTRING = None # Mandatory to specify schema. Please name your fields exactly like you name them in your items. Please make sure that the item has always values filled, otherwise you may see errors during scraping. See also https://fastavro.readthedocs.io/en/latest/writer.html
 EXPORTER_AVRO_VALIDATOR = None # use fast avro validator when writing, can be None, True (fastavro.validation.validate or a function)
 Custom avro feed exporter
-FEED_EXPORTERS={'avro': 'zuinnote.contrib.bigexporters.AvroItemExporter'} # register additional format
+FEED_EXPORTERS={'avro': 'zuinnote.scrapy.contrib.bigexporters.AvroItemExporter'} # register additional format
 Example local file:
 FEEDS = {'data-%(name)s-%(time)s.avro': {'format':'avro','encoding':'utf8',store_empty': False}} # store as local file containing spider name and scrape datetime, e.g. data-quotes-2020-01-01T10-00-00.avro
 Example s3 file:
