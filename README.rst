@@ -9,6 +9,7 @@ Overview
 scrapy-contrib-bigexporters provides additional exporters for the web crawling and scraping framework Scrapy (https://scrapy.org).
 
 The following big data formats are supported:
+
 * Parquet: https://parquet.apache.org/
 * Avro: https://avro.apache.org/
 
