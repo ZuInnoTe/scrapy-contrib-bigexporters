@@ -17,30 +17,30 @@ If you want to use special types of compression then additional libraries may be
    :widths: 25 25 50
    :header-rows: 1
 
-* - Compression Codec
-  - Description
-  - Additional library
-* - 'null'
-  - No compression
-  - built-in
-* - 'deflate'
-  -  Gzip compression
-  - built-in
-* - 'bzip2'
-  -  Bzip2 compression
-  - built-in
-* - 'snappy'
-  - Snappy compression
-  - `python-snappy <https://pypi.org/project/python-snappy/>`_
-* - 'zstandard'
-  - Zstandard compression
-  - `zstandard <https://pypi.org/project/zstandard/>`_
-* - 'lz4'
-  - LZ4 compression
-  - `lz4 <https://pypi.org/project/lz4/>`_
-* - 'xz'
-  - XZ compression
-  - `backpots.lzma <https://pypi.org/project/backports.lzma/>`_
+   * - Compression Codec
+     - Description
+     - Additional library
+   * - 'null'
+     - No compression
+     - built-in
+   * - 'deflate'
+     -  Gzip compression
+     - built-in
+   * - 'bzip2'
+     -  Bzip2 compression
+     - built-in
+   * - 'snappy'
+     - Snappy compression
+     - `python-snappy <https://pypi.org/project/python-snappy/>`_
+   * - 'zstandard'
+     - Zstandard compression
+     - `zstandard <https://pypi.org/project/zstandard/>`_
+   * - 'lz4'
+     - LZ4 compression
+     - `lz4 <https://pypi.org/project/lz4/>`_
+   * - 'xz'
+     - XZ compression
+     - `backpots.lzma <https://pypi.org/project/backports.lzma/>`_
 
 Configuration
 =============
