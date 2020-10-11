@@ -24,9 +24,14 @@ from setuptools import setup, find_packages
 
 
 install_requires = [
-    'scrapy>=2.1.0',
+    'Scrapy>=2.1.0',
 ]
 extras_require = {
+    'parquet': ['fastparquet>=0.4.1'],
+    'avro':['fastavro>=1.0.0.post1']
+}
+test_requires = {
+    'scrapy': ['Scrapy>=2.1.0'],
     'parquet': ['fastparquet>=0.4.1'],
     'avro':['fastavro>=1.0.0.post1']
 }
