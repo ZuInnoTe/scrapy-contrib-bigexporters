@@ -14,8 +14,9 @@ You can find an example on how to use it in a Scrapy project `here <../examples/
 General Guidelines
 ==================
 
-Please look carefully at the option below. You need in any case define an `Avro schema <https://fastavro.readthedocs.io/en/latest/>`_
-Field name in your Avro schema should match the field names that you have defined in your Scrapy scraper project. Carefully look at the types and that your scraper always provides the correct type. Especially in case the data cannot be found on the web page or is not in the expected format (e.g. numbers contain text on the website)
+Please look carefully at the option below. You need in any case define an `Avro schema <https://fastavro.readthedocs.io/en/latest/>`_.
+
+Field names in your Avro schema should match the field names that you have defined in your Scrapy scraper project. Carefully look at the types and that your scraper always provides the correct type. Especially in case the data cannot be found on the web page or is not in the expected format (e.g. numbers contain text on the website)
 
 
 Configuration
