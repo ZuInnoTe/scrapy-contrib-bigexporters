@@ -12,6 +12,16 @@ BOT_NAME = 'quotes_parquet'
 SPIDER_MODULES = ['quotes_parquet.spiders']
 NEWSPIDER_MODULE = 'quotes_parquet.spiders'
 
+# Bigexporters Parquet settings
+EXPORTER_PARQUET_COMPRESSION = 'GZIP' # compression to be used in Parquet, UNCOMPRESSED, GZIP, SNAPPY (package: python-snappy), LZO (package: lzo), BROTLI (package: brotli), LZ4 (package: lz4), ZSTD (package: zstandard) note: compression may require additional libraries
+EXPORTER_PARQUET_TIMES = 'int64' # type for times int64 or int96, spark is int96 only
+EXPORTER_PARQUET_CONVERTALLSTRINGS = False # convert all values to string. recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
+EXPORTER_PARQUET_HASNULLS = True # can contain nulls
+EXPORTER_PARQUET_ROWGROUPOFFSET = 50000000 # offset row groups
+EXPORTER_PARQUET_ITEMS_ROWGROUP = 10000  # how many items per rowgroup, should be several thousands, e.g. between 5,000 and 30,000. The more rows the higher the memory consumption and the better the compression on the final parquet file
+# Custom parquet feed exporter
+FEED_EXPORTERS={'parquet': 'zuinnote.scrapy.contrib.bigexporters.ParquetItemExporter'} # register additional format
+
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'quotes_parquet (+http://www.yourdomain.com)'
