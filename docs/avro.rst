@@ -13,6 +13,7 @@ Additional libraries
 You need at least the library `fastavro <https://pypi.org/project/fastavro/>`_ to enable the Avro export.
 
 If you want to use special types of compression then additional libraries may be needed:
+
 .. list-table:: Compression Codecs and required libraries
    :widths: 25 25 50
    :header-rows: 1
