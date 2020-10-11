@@ -30,7 +30,7 @@ extras_require = {
     'parquet': ['fastparquet>=0.4.1'],
     'avro':['fastavro>=1.0.0.post1']
 }
-test_requires = {
+tests_require = {
     'scrapy': ['Scrapy>=2.1.0'],
     'parquet': ['fastparquet>=0.4.1'],
     'avro':['fastavro>=1.0.0.post1']
@@ -53,6 +53,7 @@ setup(
     python_requires='>=3.6',
     install_requires=install_requires,
     extras_require=extras_require,
+    tests_requires=tests_require, 
     test_suite="tests",
     packages=find_packages(), #include/exclude arguments take * as wildcard, . for any sub-package names
 )
