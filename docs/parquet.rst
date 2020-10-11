@@ -91,7 +91,7 @@ If you want to use special types of compression then additional libraries may be
    * - 'SNAPPY'
      - Snappy compression
      - `python-snappy <https://pypi.org/project/python-snappy/>`_
-   * - 'lzo'
+   * - 'LZO'
      - LZO compression
      - `lzo <https://pypi.org/project/lzo/>`_
    * - 'BROTLI'
@@ -100,6 +100,6 @@ If you want to use special types of compression then additional libraries may be
    * - 'ZSTD'
      - Zstandard compression
      - `zstandard <https://pypi.org/project/zstandard/>`_
-   * - 'lz4'
+   * - 'LZ4'
      - LZ4 compression
      - `lz4 <https://pypi.org/project/lz4/>`_
