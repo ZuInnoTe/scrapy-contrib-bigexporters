@@ -30,3 +30,24 @@ Install
 The quick way::
 
     pip install scrapy-contrib-bigexporters
+
+Depending on which format you want to use you need to install one or more of the following libraries.
+
+Parquet::
+
+    pip install fastavro
+
+Parquet::
+
+    pip install fastparquet
+
+Additional libraries may be needed for specific compression algorithms. See "Use".
+
+Use
+====
+
+Use of the library is simple. Install it with your Scrapy project as described above.You only need to configure the exporter in the Scrapy settings, run your scraper and the data will be exported into your desired format. There is no development needed.
+
+See here for configuring the exporter in settings:
+* [Avro](docs/avro.rst)
+* [Parquet](docs/parquet.rst)

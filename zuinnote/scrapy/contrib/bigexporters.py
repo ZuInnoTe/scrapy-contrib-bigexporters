@@ -51,7 +51,7 @@ see: https://docs.scrapy.org/en/latest/topics/exporters.html
 Avro exporter
 Write export as avro file (based on fastavro - you need to add the latest version as a dependency)
 Possible options in settings.py and their default settings
-EXPORTER_AVRO_COMPRESSION = 'deflate' # compression to be used in Avro, null, deflate, bzip2, snappy (package: python-snappy), zstandard(package: zstandard), lz4 (package: lz4) , xz (packahe: backports.lzma) note: compression may require additional libraries
+EXPORTER_AVRO_COMPRESSION = 'deflate' # compression to be used in Avro, null, deflate, bzip2, snappy (package: python-snappy), zstandard(package: zstandard), lz4 (package: lz4) , xz (package: backports.lzma) note: compression may require additional libraries
 EXPORTER_AVRO_COMPRESSIONLEVEL = None # codec specific compression level, can be an integer if supported by codec
 EXPORTER_AVRO_METADATA = None # metadata (dict)
 EXPORTER_AVRO_SYNCINTERVAL = 16000 # sync interval, how many bytes written per block, should be several thousands, the higher the better is the compression, but seek time may increase
