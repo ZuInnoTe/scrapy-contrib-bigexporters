@@ -194,7 +194,7 @@ class ParquetItemExporter(BaseItemExporter):
                 value=fields.get(column,None)
                 row[column]=value
         if self.pq_convertstr==True:
-          return pd.DataFrame(row,index=[0]).astype(str)
+          return pd.DataFrame(row,index=    [0]).astype(str)
         return row
 
     def _reset_rowgroup(self):
@@ -222,7 +222,7 @@ class ParquetItemExporter(BaseItemExporter):
             if self.firstBlock==True:
                 self.firstBlock=False
                 papp=False
-            fp_write(self.file.name, self.df,append=papp,compression=self.pq_compression,has_nulls=self.pq_hasnulls,file_scheme="simple",object_encoding="infer",times=self.pq_times,row_group_offsets=self.pq_rowgroupoffset)
+            fp_write(self.file.name, self.df,append=papp,compression=self.pq_compression,has_nulls=self.pq_hasnulls,write_index=False,file_scheme="simple",object_encoding="infer",times=self.pq_times,row_group_offsets=self.pq_rowgroupoffset)
             # initialize new data frame for new row group
             self._reset_rowgroup()
 
