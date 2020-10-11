@@ -2,11 +2,20 @@
 Export
 ======
 
-We describe here how to use the avro exporter with Scrapy
+We describe here how to use the Avro exporter with Scrapy.
+
+`Avro <https://avro.apache.org/>`_ is a file format common in Big Data platforms for exchanging data in a structured way.
 
 Example
 =======
 You can find an example on how to use it in a Scrapy project `here <../examples/quotes_avro>`_
+
+
+General Guidelines
+==================
+
+Please look carefully at the option below. You need in any case define an `Avro schema <https://fastavro.readthedocs.io/en/latest/>`_
+Field name in your Avro schema should match the field names that you have defined in your Scrapy scraper project. Carefully look at the types and that your scraper always provides the correct type. Especially in case the data cannot be found on the web page or is not in the expected format (e.g. numbers contain text on the website)
 
 Additional libraries
 ====================
