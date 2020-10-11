@@ -38,7 +38,7 @@ test_requires = {
 
 setup(
     name = 'scrapy-contrib-bigexporters',
-    description = 'Scrapy exporter for Big Data formats: Parquet and Avro',
+    description = 'Scrapy exporter for Big Data formats',
     long_description=open('README.rst').read(),
     author='Jörn Franke',
     maintainer='ZuInnoTe',
