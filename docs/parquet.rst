@@ -55,7 +55,7 @@ Finally, you can fine tune your export by configuring the following options in s
      - type for times 'int64' or 'int96', spark is int96 only
    * - EXPORTER_PARQUET_CONVERTALLSTRINGS
      - EXPORTER_PARQUET_CONVERTALLSTRINGS = False
-     - Aconvert all values to string. recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
+     - convert all values to string. recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
    * - EXPORTER_PARQUET_HASNULLS
      - EXPORTER_PARQUET_HASNULLS = True
      - can contain nulls
