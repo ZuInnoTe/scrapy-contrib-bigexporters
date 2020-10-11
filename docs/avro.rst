@@ -64,37 +64,37 @@ There are more storage backend, e.g. Google Cloud. See the documentation linked 
 
 Finally, you can fine tune your export by configuring the following options in settings.py:
 
-.. list-table:: Compression Codecs and required libraries
+.. list-table:: Options for Avro export
    :widths: 25 25 50
    :header-rows: 1
 
-* - Option
-  - Default
-  - Description
-* - EXPORTER_AVRO_COMPRESSION
-  - EXPORTER_AVRO_COMPRESSION = 'deflate'
-  - Compression to be used in Avro: 'null', 'deflate', 'bzip2', 'snappy', 'zstandard', 'lz4', 'xz'
-* - EXPORTER_AVRO_COMPRESSIONLEVEL
-  - EXPORTER_AVRO_COMPRESSIONLEVEL = None
-  - Compression level to be used in Avro: can be an integer if supported by codec
-* - EXPORTER_AVRO_METADATA
-  - EXPORTER_AVRO_METADATA = None
-  - Avro metadata (dict)
-* - EXPORTER_AVRO_SYNCINTERVAL
-  - EXPORTER_AVRO_SYNCINTERVAL = 16000
-  - sync interval, how many bytes written per block, should be several thousands, the higher the better is the compression, but seek time may increase
-* - EXPORTER_AVRO_RECORDCACHE
-  - EXPORTER_AVRO_RECORDCACHE = 10000
-  - how many records should be written at once, the higher the better the compression, but the more memory is needed
-* - EXPORTER_AVRO_SYNCMARKER
-  - EXPORTER_AVRO_SYNCMARKER = None
-  - bytes, if None then a random byte string is used
-* - EXPORTER_AVRO_CONVERTALLSTRINGS
-  - EXPORTER_AVRO_CONVERTALLSTRINGS = False
-  - convert all values to string. recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
-* - EXPORTER_AVRO_SCHEMASTRING
-  - EXPORTER_AVRO_SCHEMASTRING = None
-  - Mandatory to specify schema. Please name your fields exactly like you name them in your items. Please make sure that the item has always values filled, otherwise you may see errors during scraping. See also `fastavro write <https://fastavro.readthedocs.io/en/latest/writer.html>`_
-* - EXPORTER_AVRO_VALIDATOR
-  - EXPORTER_AVRO_VALIDATOR = None
-  - use fast avro validator when writing, can be None, True (fastavro.validation.validate or a function)
+   * - Option
+     - Default
+     - Description
+   * - EXPORTER_AVRO_COMPRESSION
+     - EXPORTER_AVRO_COMPRESSION = 'deflate'
+     - Compression to be used in Avro: 'null', 'deflate', 'bzip2', 'snappy', 'zstandard', 'lz4', 'xz'
+   * - EXPORTER_AVRO_COMPRESSIONLEVEL
+     - EXPORTER_AVRO_COMPRESSIONLEVEL = None
+     - Compression level to be used in Avro: can be an integer if supported by codec
+   * - EXPORTER_AVRO_METADATA
+     - EXPORTER_AVRO_METADATA = None
+     - Avro metadata (dict)
+   * - EXPORTER_AVRO_SYNCINTERVAL
+     - EXPORTER_AVRO_SYNCINTERVAL = 16000
+     - sync interval, how many bytes written per block, should be several thousands, the higher the better is the compression, but seek time may increase
+   * - EXPORTER_AVRO_RECORDCACHE
+     - EXPORTER_AVRO_RECORDCACHE = 10000
+     - how many records should be written at once, the higher the better the compression, but the more memory is needed
+   * - EXPORTER_AVRO_SYNCMARKER
+     - EXPORTER_AVRO_SYNCMARKER = None
+     - bytes, if None then a random byte string is used
+   * - EXPORTER_AVRO_CONVERTALLSTRINGS
+     - EXPORTER_AVRO_CONVERTALLSTRINGS = False
+     - convert all values to string. recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
+   * - EXPORTER_AVRO_SCHEMASTRING
+     - EXPORTER_AVRO_SCHEMASTRING = None
+     - Mandatory to specify schema. Please name your fields exactly like you name them in your items. Please make sure that the item has always values filled, otherwise you may see errors during scraping. See also `fastavro write <https://fastavro.readthedocs.io/en/latest/writer.html>`_
+   * - EXPORTER_AVRO_VALIDATOR
+     - EXPORTER_AVRO_VALIDATOR = None
+     - use fast avro validator when writing, can be None, True (fastavro.validation.validate or a function)
