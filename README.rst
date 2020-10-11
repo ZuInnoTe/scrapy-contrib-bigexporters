@@ -50,5 +50,5 @@ Use of the library is simple. Install it with your Scrapy project as described a
 
 See here for configuring the exporter in settings:
 
-* `Avro <docs/avro.rst>`_
-* `Parquet <docs/parquet.rst>`_
+* `Avro <https://github.com/ZuInnoTe/scrapy-contrib-bigexporters/blob/master/docs/avro.rst>`_
+* `Parquet <https://github.com/ZuInnoTe/scrapy-contrib-bigexporters/blob/master/docs/parquet.rst>`_
