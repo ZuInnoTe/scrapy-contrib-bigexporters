@@ -17,40 +17,6 @@ General Guidelines
 Please look carefully at the option below. You need in any case define an `Avro schema <https://fastavro.readthedocs.io/en/latest/>`_
 Field name in your Avro schema should match the field names that you have defined in your Scrapy scraper project. Carefully look at the types and that your scraper always provides the correct type. Especially in case the data cannot be found on the web page or is not in the expected format (e.g. numbers contain text on the website)
 
-Additional libraries
-====================
-You need at least the library `fastavro <https://pypi.org/project/fastavro/>`_ to enable the Avro export.
-
-If you want to use special types of compression then additional libraries may be needed:
-
-.. list-table:: Compression Codecs and required libraries
-   :widths: 25 25 50
-   :header-rows: 1
-
-   * - Compression Codec
-     - Description
-     - Additional library
-   * - 'null'
-     - No compression
-     - built-in
-   * - 'deflate'
-     -  Gzip compression
-     - built-in
-   * - 'bzip2'
-     -  Bzip2 compression
-     - built-in
-   * - 'snappy'
-     - Snappy compression
-     - `python-snappy <https://pypi.org/project/python-snappy/>`_
-   * - 'zstandard'
-     - Zstandard compression
-     - `zstandard <https://pypi.org/project/zstandard/>`_
-   * - 'lz4'
-     - LZ4 compression
-     - `lz4 <https://pypi.org/project/lz4/>`_
-   * - 'xz'
-     - XZ compression
-     - `backpots.lzma <https://pypi.org/project/backports.lzma/>`_
 
 Configuration
 =============
@@ -107,3 +73,39 @@ Finally, you can fine tune your export by configuring the following options in s
    * - EXPORTER_AVRO_VALIDATOR
      - EXPORTER_AVRO_VALIDATOR = None
      - use fast avro validator when writing, can be None, True (fastavro.validation.validate or a function)
+
+
+Additional libraries
+====================
+You need at least the library `fastavro <https://pypi.org/project/fastavro/>`_ to enable the Avro export.
+
+If you want to use special types of compression then additional libraries may be needed:
+
+.. list-table:: Compression Codecs and required libraries
+   :widths: 25 25 50
+   :header-rows: 1
+
+   * - Compression Codec
+     - Description
+     - Additional library
+   * - 'null'
+     - No compression
+     - built-in
+   * - 'deflate'
+     -  Gzip compression
+     - built-in
+   * - 'bzip2'
+     -  Bzip2 compression
+     - built-in
+   * - 'snappy'
+     - Snappy compression
+     - `python-snappy <https://pypi.org/project/python-snappy/>`_
+   * - 'zstandard'
+     - Zstandard compression
+     - `zstandard <https://pypi.org/project/zstandard/>`_
+   * - 'lz4'
+     - LZ4 compression
+     - `lz4 <https://pypi.org/project/lz4/>`_
+   * - 'xz'
+     - XZ compression
+     - `backpots.lzma <https://pypi.org/project/backports.lzma/>`_
