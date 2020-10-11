@@ -17,6 +17,7 @@ EXPORTER_PARQUET_COMPRESSION = 'GZIP' # compression to be used in Parquet, UNCOM
 EXPORTER_PARQUET_TIMES = 'int64' # type for times int64 or int96, spark is int96 only
 EXPORTER_PARQUET_CONVERTALLSTRINGS = False # convert all values to string. recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
 EXPORTER_PARQUET_HASNULLS = True # can contain nulls
+EXPORTER_PARQUET_WRITEINDEX = False # write index as extra column
 EXPORTER_PARQUET_ROWGROUPOFFSET = 50000000 # offset row groups
 EXPORTER_PARQUET_ITEMS_ROWGROUP = 10000  # how many items per rowgroup, should be several thousands, e.g. between 5,000 and 30,000. The more rows the higher the memory consumption and the better the compression on the final parquet file
 # Custom parquet feed exporter
