@@ -34,6 +34,7 @@ EXPORTER_PARQUET_COMPRESSION = 'GZIP' # compression to be used in Parquet, UNCOM
 EXPORTER_PARQUET_TIMES = 'int64' # type for times int64 or int96, spark is int96 only
 EXPORTER_PARQUET_CONVERTALLSTRINGS = True # convert all values to string. recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
 EXPORTER_PARQUET_HASNULLS = True # can contain nulls
+EXPORTER_PARQUET_WRITEINDEX = False # write index as extra column
 EXPORTER_PARQUET_ROWGROUPOFFSET = 50000000 # offset row groups
 EXPORTER_PARQUET_ITEMS_ROWGROUP = 10000  # how many items per rowgroup, should be several thousands, e.g. between 5,000 and 30,000. The more rows the higher the memory consumption and the better the compression on the final parquet file
 Custom parquet feed exporter
@@ -145,6 +146,9 @@ class ParquetItemExporter(BaseItemExporter):
         self.pq_hasnulls=self.settings.get('EXPORTER_PARQUET_HASNULLS')
         if self.pq_hasnulls is None:
             self.pq_hasnulls=True
+        self.pq_writeindex=self.settings.get('EXPORTER_PARQUET_WRITEINDEX')
+        if self.pq_writeindex is None:
+            self.pq_writeindex=False
         self.pq_items_rowgroup=self.settings.get('EXPORTER_PARQUET_ITEMS_ROWGROUP')
         if self.pq_items_rowgroup is None:
             self.pq_items_rowgroup=10000
@@ -222,7 +226,7 @@ class ParquetItemExporter(BaseItemExporter):
             if self.firstBlock==True:
                 self.firstBlock=False
                 papp=False
-            fp_write(self.file.name, self.df,append=papp,compression=self.pq_compression,has_nulls=self.pq_hasnulls,write_index=False,file_scheme="simple",object_encoding="infer",times=self.pq_times,row_group_offsets=self.pq_rowgroupoffset)
+            fp_write(self.file.name, self.df,append=papp,compression=self.pq_compression,has_nulls=self.pq_hasnulls,write_index=self.pq_writeindex,file_scheme="simple",object_encoding="infer",times=self.pq_times,row_group_offsets=self.pq_rowgroupoffset)
             # initialize new data frame for new row group
             self._reset_rowgroup()
 
