@@ -240,6 +240,7 @@ class AvroItemExporter(BaseItemExporter):
             Initialize exporter
         """
         super().__init__(**kwargs)
+        self.firstBlock=True
         self.file=file # file name
         self.itemcount=0 # initial item count
         self.records=[] # record cache
@@ -298,18 +299,25 @@ class AvroItemExporter(BaseItemExporter):
         """
         # flush last items from records cache
         self._flush_table()
+        # close any open file
+        self.file.close()
 
     def _flush_table(self):
             """
                 Writes the current record cache to avro file
             """
             if len(self.records)>0:
-                # reset written entries
-                self.itemcount=0
+                if self.firstBlock==False:
+                    # reopen file
+                    self.file=open(self.file.name,'a+b')
                 # write cache to avro file
                 fa_writer(self.file, self.avro_parsedschema,self.records,codec=self.avro_compression,sync_interval=self.avro_syncinterval,metadata=self.avro_metadata,validator=self.avro_validator,sync_marker=self.avro_syncmarker,codec_compression_level=self.avro_compressionlevel)
+                # reset written entries
+                self.itemcount=0
                 # initialize new record cache
                 self.records=[]
+                # reinit file
+                self.firstBlock=False
 
 
     def _infer_item_avroschema(self,item):
