@@ -12,7 +12,7 @@ BOT_NAME = 'quotes_avro'
 SPIDER_MODULES = ['quotes_avro.spiders']
 NEWSPIDER_MODULE = 'quotes_avro.spiders'
 
-# Bigexpoters Avo settings
+# Bigexporters Avro settings
 EXPORTER_AVRO_COMPRESSION = 'deflate' # compression to be used in Avro, null, deflate, bzip2, snappy (package: python-snappy), zstandard(package: zstandard), lz4 (package: lz4) , xz (packahe: backports.lzma) note: compression may require additional libraries
 EXPORTER_AVRO_COMPRESSIONLEVEL = None # codec specific compression level, can be an integer if supported by codec
 EXPORTER_AVRO_METADATA = None # metadata (dict)
