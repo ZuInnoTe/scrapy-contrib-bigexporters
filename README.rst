@@ -33,7 +33,7 @@ The quick way::
 
 Depending on which format you want to use you need to install one or more of the following libraries.
 
-Parquet::
+Avro::
 
     pip install fastavro
 
