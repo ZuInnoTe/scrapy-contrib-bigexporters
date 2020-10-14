@@ -69,6 +69,7 @@ Local file (e.g. "data-quotes-2020-01-01T10-00-00.avro") with a schema "Author, 
         }
       }
 S3 file (e.g "s3://mybucket/data-quotes-2020-01-01T10-00-00.avro") with a schema "Author, text, tags"::
+
      FEEDS = {
       's3://aws_key:aws_secret@mybucket/data-%(name)s-%(time)s.avro': {
           'format':'avro',
@@ -102,7 +103,7 @@ S3 file (e.g "s3://mybucket/data-quotes-2020-01-01T10-00-00.avro") with a schema
                            }
                        },
                    ]
-               } 
+               }
             }
       }
     }

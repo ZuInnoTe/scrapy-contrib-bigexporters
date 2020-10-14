@@ -28,6 +28,7 @@ You need to configure in your Scrapy project in settings.py the following export
 Then you need to configure `FEEDS <https://docs.scrapy.org/en/latest/topics/feed-exports.html#std-setting-FEEDS>`_ in settings.py to define output format and file name.
 
 Example local file, e.g. data-quotes-2020-01-01T10-00-00.parquet::
+
   FEEDS = {
   'data-%(name)s-%(time)s.parquet': {
           'format': 'parquet',
@@ -46,6 +47,7 @@ Example local file, e.g. data-quotes-2020-01-01T10-00-00.parquet::
   }
 
 Example s3 file, e.g. s3://mybucket/data-quotes-2020-01-01T10-00-00.parquet::
+
   FEEDS = {
   's3://aws_key:aws_secret@mybucket/data-%(name)s-%(time)s.parquet': {
           'format': 'parquet',
