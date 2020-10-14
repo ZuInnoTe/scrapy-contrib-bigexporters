@@ -29,13 +29,13 @@ install_requires = [
 extras_require = {
     'parquet': ['fastparquet>=0.4.1'],
     'avro':['fastavro>=1.0.0.post1'],
-    'orc': ['pyorc>=0.4.0']
+    'orc': ['pyorc>=0.3.0']
 }
 tests_require = {
     'scrapy': ['Scrapy>=2.3.0'],
     'parquet': ['fastparquet>=0.4.1'],
     'avro':['fastavro>=1.0.0.post1'],
-    'orc': ['pyorc>=0.4.0']
+    'orc': ['pyorc>=0.3.0']
 }
 
 setup(
