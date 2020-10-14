@@ -15,4 +15,6 @@ Run Scrapy
 
 Use the following command to run the crawler in Parquet format ::
 
-    scrapy crawl quotes_parquet -o data.parquet -t parquet
+    scrapy crawl quotes
+
+You will get as output a file called data.parquet
