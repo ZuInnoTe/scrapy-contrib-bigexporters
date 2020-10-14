@@ -137,7 +137,7 @@ If you want to use special types of compression then additional libraries may be
 .. list-table:: Compression Codecs and required libraries
    :widths: 25 25 50
    :header-rows: 1
-None = 0, ZLIB = 1, SNAPPY = 2, LZO = 3, LZ4 = 4, ZSTD = 5
+
    * - Compression Codec
      - Description
      - Additional library
