@@ -61,7 +61,7 @@ FEEDS = {
            'hasnulls': True,# can contain nulls
            'convertallstrings': False,# convert all values to string. recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
            'writeindex': False, # write index as extra column
-            'rowgroupoffset': 50000000, # offset row groups
+           'rowgroupoffset': 50000000, # offset row groups
            'items_rowgroup': 10000  # how many items per rowgroup, should be several thousands, e.g. between 5,000 and 30,000. The more rows the higher the memory consumption and the better the compression on the final parquet file
         },
     }
@@ -90,7 +90,7 @@ FEEDS = {
            'syncinterval': 16000, # sync interval, how many bytes written per block, should be several thousands, the higher the better is the compression, but seek time may increase
            'recordcache': 10000, # how many records should be written at once, the higher the better the compression, but the more memory is needed
            'syncmarker': None, # bytes, if None then a random byte string is used
-           'convertallstrings': False,# convert all values to string (ignored if avro schema file is specified). recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
+           'convertallstrings': False,# convert all values to string. recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
            'validator': None, # use fast avro validator when writing, can be None, True (fastavro.validation.validate or a function)
            'avroschema': {
                'doc': 'Some quotes',
@@ -129,7 +129,7 @@ FEEDS = {
            'syncinterval': 16000, # sync interval, how many bytes written per block, should be several thousands, the higher the better is the compression, but seek time may increase
            'recordcache': 10000, # how many records should be written at once, the higher the better the compression, but the more memory is needed
            'syncmarker': None, # bytes, if None then a random byte string is used
-           'convertallstrings': False,# convert all values to string (ignored if avro schema file is specified). recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
+           'convertallstrings': False,# convert all values to string. recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
            'validator': None, # use fast avro validator when writing, can be None, True (fastavro.validation.validate or a function)
            'avroschema': {
                'doc': 'Some quotes',
@@ -176,8 +176,11 @@ FEEDS = {
            'compression': pyorc.CompressionKind.ZLIB, # compression to be used in orc, see pyorc.CompressionKind (None = 0, ZLIB = 1, SNAPPY = 2 (package: python-snappy), LZO = 3 (package: lzo), LZ4 = 4 (package: lz4), ZSTD = 5 (package: zstandard), note: compression may require additional libraries
            'compressionstrategy': pyorc.CompressionStrategy.SPEED, # compression to be used in orc, see pyorc.CompressionStrategy (Speed = 0, COMPRESSION = 1)
            'blocksize': 65536,# block size of an ORC bloc
+           'batchsize': 1024, # batch size
+           'stripesize': 67108864, # stripe size
            'recordcache': 10000, # how many records should be written at once, the higher the better the compression, but the more memory is needed, potentially also bloom filter performance can be increased with higher values
            'schemastring': "struct<text:string,author:list<string>,tags:list<string>>", # Mandatory to specify schema. Please name your fields exactly like you name them in your items. See also https://pyorc.readthedocs.io/en/latest/api.html#pyorc.Struct
+           'convertallstrings': False,# convert all values to string. recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
            'bloomfiltercolumns': None, # Define for which columns a bloom filter should be used (list). Bloom filters are very useful for performing access to columns containing few discrete values
            'bloomfilterfpp': 0.05, # False positives probability for bloom filters
            'structrepr': pyorc.StructRepr.TUPLE, # representation of the ORC struct type, see https://pyorc.readthedocs.io/en/latest/api.html#pyorc.StructRepr
@@ -198,8 +201,11 @@ FEEDS = {
            'compression': pyorc.CompressionKind.ZLIB, # compression to be used in orc, see pyorc.CompressionKind (None = 0, ZLIB = 1, SNAPPY = 2 (package: python-snappy), LZO = 3 (package: lzo), LZ4 = 4 (package: lz4), ZSTD = 5 (package: zstandard), note: compression may require additional libraries
            'compressionstrategy': pyorc.CompressionStrategy.SPEED, # compression to be used in orc, see pyorc.CompressionStrategy (Speed = 0, COMPRESSION = 1)
            'blocksize': 65536,# block size of an ORC bloc
+           'batchsize': 1024, # batch size
+           'stripesize': 67108864, # stripe size
            'recordcache': 10000, # how many records should be written at once, the higher the better the compression, but the more memory is needed, potentially also bloom filter performance can be increased with higher values
            'schemastring': "struct<text:string,author:list<string>,tags:list<string>>", # Mandatory to specify schema. Please name your fields exactly like you name them in your items. See also https://pyorc.readthedocs.io/en/latest/api.html#pyorc.Struct
+           'convertallstrings': False,# convert all values to string. recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
            'bloomfiltercolumns': None, # Define for which columns a bloom filter should be used (list). Bloom filters are very useful for performing access to columns containing few discrete values
            'bloomfilterfpp': 0.05, # False positives probability for bloom filters
            'structrepr': pyorc.StructRepr.TUPLE, # representation of the ORC struct type, see https://pyorc.readthedocs.io/en/latest/api.html#pyorc.StructRepr
@@ -407,8 +413,8 @@ class AvroItemExporter(BaseItemExporter):
         self.avro_compression=options.pop('compression','deflate')
         self.avro_compressionlevel=options.pop('compressionlevel',None)
         self.avro_convertstr=options.pop('convertallstrings',False)
-        self.avro_schemastring=options.pop('avroschema','')
-        if self.avro_schemastring=='':
+        self.avro_schema=options.pop('avroschema','')
+        if self.avro_schema=='':
             raise RuntimeError("No avro schema defined")
         self.avro_parsedschema=None
         self.avro_validator=options.pop('validator',None)
@@ -423,7 +429,7 @@ class AvroItemExporter(BaseItemExporter):
             Export a specific item to the file
         """
         if self.avro_parsedschema is None:
-            self.avro_parsedschema=fa_parse_schema(self.avro_schemastring)
+            self.avro_parsedschema=fa_parse_schema(self.avro_schema)
         # flush cache to avro file
         if self.itemcount>self.avro_recordcache:
                 self._flush_table()
@@ -481,3 +487,117 @@ class AvroItemExporter(BaseItemExporter):
 """
   Orc exporter
 """
+class OrcItemExporter(BaseItemExporter):
+
+    def __init__(self, file, dont_fail=False, **kwargs):
+        """
+            Initialize exporter
+        """
+        super().__init__(**kwargs)
+        self.firstBlock=True
+        self.file=file # file name
+        self.itemcount=0 # initial item count
+        self.records=[] # record cache
+        self.logger = logging.getLogger()
+        if SUPPORTED_EXPORTERS['orc']:
+            self._configure(kwargs, dont_fail=dont_fail)
+
+
+    def _configure(self, options, dont_fail=False):
+        """Configure the exporter by poping options from the ``options`` dict.
+        If dont_fail is set, it won't raise an exception on unexpected options
+        (useful for using with keyword arguments in subclasses ``__init__`` methods)
+        """
+        self.encoding = options.pop('encoding', None)
+        self.fields_to_export = options.pop('fields_to_export', None)
+        self.export_empty_fields = options.pop('export_empty_fields', False)
+        # Read settings
+        self.orc_compression=options.pop('compression', pyorc.CompressionKind.ZLIB)
+        self.orc_compressionstrategy=options.pop('compressionstrategy',pyorc.CompressionStrategy.SPEED)
+        self.orc_blocksize=options.pop('blocksize',65536)
+        self.orc_batchsize=options.pop('batchsize',1024)
+        self.orc_stripesize=options.pop('stripesize',67108864)
+        self.orc_recordcache=options.pop('recordcache',10000)
+        self.orc_convertstr=options.pop('convertallstrings',False)
+        self.orc_schemastring=options.pop('schemastring','')
+        if self.orc_schemastring=='':
+            raise RuntimeError("No orc schema defined")
+        self.orc_bloomfiltercolumns=options.pop('bloomfiltercolumns',None)
+        self.orc_bloomfilterfpp=options.pop('bloomfilterfpp',0.05)
+        self.orc_structrepr=options.pop('bloomfilterfpp',pyorc.StructRepr.TUPLE)
+        self.orc_converters=options.pop('converters',None)
+        self.orc_metadata=options.pop('metadata',None)
+
+
+    def export_item(self, item):
+        """
+            Export a specific item to the file
+        """
+        # flush cache to orc file
+        if self.itemcount>self.orc_recordcache:
+                self._flush_table()
+        itemrecord=self._get_dict_from_item(item)
+        record=[]
+        # find the order of the columns in the orc schema
+        sortdict = {}
+        for key,value in itemrecord.items():
+            try:
+                keypos=self.orcwriter.schema.find_column_id(key)
+                sortdict[keypos]=key
+            except KeyError:
+                self.logger.debug("Cannot find key in schema: "+key)
+        for keypos in sorted(sortdict.keys()):
+            record.append(itemrecord[sortdict[keypos]])
+        if len(record)>0:
+            self.records.append(tuple(record))
+            self.itemcount+=1
+        return item
+
+
+    def start_exporting(self):
+        """
+            Triggered when Scrapy starts exporting. Useful to configure headers etc.
+        """
+        if not SUPPORTED_EXPORTERS['orc']:
+            raise RuntimeError("Error: Cannot export to orc. Cannot import pyorc. Have you installed it?")
+        self.orcwriter = pyorc.Writer(self.file, schema=self.orc_schemastring,batch_size=self.orc_batchsize,stripe_size=self.orc_stripesize,compression=self.orc_compression,compression_strategy=self.orc_compressionstrategy,compression_block_size=self.orc_blocksize,bloom_filter_columns=self.orc_bloomfiltercolumns,bloom_filter_fpp=self.orc_bloomfilterfpp,struct_repr=self.orc_structrepr,converters=self.orc_converters)
+
+
+
+
+
+    def finish_exporting(self):
+        """
+            Triggered when Scrapy ends exporting. Useful to shutdown threads, close files etc.
+        """
+        # flush last items from records cache
+        self._flush_table()
+        # close any open file
+        self.orcwriter.close()
+        self.file.close()
+
+    def _flush_table(self):
+            """
+                Writes the current record cache to avro file
+            """
+            if len(self.records)>0:
+                # write cache to orc file
+                self.orcwriter.writerows(self.records)
+
+                # reset written entries
+                self.itemcount=0
+                # initialize new record cache
+                self.records=[]
+                # reinit file
+                self.firstBlock=False
+
+
+    def _get_dict_from_item(self,item):
+        """
+            Returns the columns and values from the item
+        """
+        fields = dict(self._get_serialized_fields(item, default_value="",include_empty=True))
+        if self.orc_convertstr:
+            for column in fields:
+                fields[column]=str(fields.column)
+        return fields
