@@ -24,16 +24,18 @@ from setuptools import setup, find_packages
 
 
 install_requires = [
-    'Scrapy>=2.1.0',
+    'Scrapy>=2.3.0',
 ]
 extras_require = {
     'parquet': ['fastparquet>=0.4.1'],
-    'avro':['fastavro>=1.0.0.post1']
+    'avro':['fastavro>=1.0.0.post1'],
+    'orc': ['pyorc>=0.4.0']
 }
 tests_require = {
-    'scrapy': ['Scrapy>=2.1.0'],
+    'scrapy': ['Scrapy>=2.3.0'],
     'parquet': ['fastparquet>=0.4.1'],
-    'avro':['fastavro>=1.0.0.post1']
+    'avro':['fastavro>=1.0.0.post1'],
+    'orc': ['pyorc>=0.4.0']
 }
 
 setup(
@@ -44,7 +46,7 @@ setup(
     maintainer='ZuInnoTe',
     maintainer_email='zuinnote@gmail.com',
     url = 'https://github.com/zuinnote/scrapy-contrib-bigexporters',
-    version='0.1.0',
+    version='0.2.0',
     classifiers=[
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
@@ -53,7 +55,7 @@ setup(
     python_requires='>=3.6',
     install_requires=install_requires,
     extras_require=extras_require,
-    tests_requires=tests_require, 
+    tests_requires=tests_require,
     test_suite="tests",
     packages=find_packages(), #include/exclude arguments take * as wildcard, . for any sub-package names
 )

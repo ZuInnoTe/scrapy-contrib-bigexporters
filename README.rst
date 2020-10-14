@@ -18,10 +18,11 @@ Requirements
 ============
 
 * Python 3.6+
-* Scrapy 2.1+
+* Scrapy 2.3+
 * Works on Linux, Windows, macOS, BSD
 * Parquet export requires fastparquet 0.4.1+
 * Avro export requires fastavro 1.0.0.post1+
+* ORC export requires pyorc 0.3.0+
 
 
 Install
@@ -36,6 +37,10 @@ Depending on which format you want to use you need to install one or more of the
 Avro::
 
     pip install fastavro
+
+ORC::
+
+    pip install pyorc
 
 Parquet::
 
@@ -52,3 +57,4 @@ See here for configuring the exporter in settings:
 
 * `Avro <https://github.com/ZuInnoTe/scrapy-contrib-bigexporters/blob/master/docs/avro.rst>`_
 * `Parquet <https://github.com/ZuInnoTe/scrapy-contrib-bigexporters/blob/master/docs/parquet.rst>`_
+* `ORC <https://github.com/ZuInnoTe/scrapy-contrib-bigexporters/blob/master/docs/orc.rst>`_
