@@ -27,18 +27,44 @@ You need to configure in your Scrapy project in settings.py the following export
 
 Then you need to configure `FEEDS <https://docs.scrapy.org/en/latest/topics/feed-exports.html#std-setting-FEEDS>`_ in settings.py to define output format and file name.
 
-Local file (e.g. "data-quotes-2020-01-01T10-00-00.parquet")::
+Example local file, e.g. data-quotes-2020-01-01T10-00-00.parquet::
+  FEEDS = {
+  'data-%(name)s-%(time)s.parquet': {
+          'format': 'parquet',
+          'encoding': 'utf8',
+          'store_empty': False,
+          'item_export_kwargs': {
+             'compression': 'GZIP',
+             'times': 'int64',
+             'hasnulls': True,
+             'convertallstrings': False,
+             'writeindex': False,
+              'rowgroupoffset': 50000000,
+             'items_rowgroup': 10000
+          },
+      }
+  }
 
-  FEEDS = {'data-%(name)s-%(time)s.parquet': {'format':'parquet','encoding':'utf8',store_empty': False}} # store as local file containing spider name and scrape datetime, e.g. data-quotes-2020-01-01T10-00-00.parquet
-
-S3 file (e.g "s3://mybucket/data-quotes-2020-01-01T10-00-00.parquet")::
-
-  FEEDS = {'s3://aws_key:aws_secret@mybucket/data-%(name)s-%(time)s.parquet': {'format':'parquet','encoding':'utf8',store_empty': False}} # store as s3 file containing spider name and scrape datetime, e.g. e.g. s3://mybucket/data-quotes-2020-01-01T10-00-00.parquet
-
-
+Example s3 file, e.g. s3://mybucket/data-quotes-2020-01-01T10-00-00.parquet::
+  FEEDS = {
+  's3://aws_key:aws_secret@mybucket/data-%(name)s-%(time)s.parquet': {
+          'format': 'parquet',
+          'encoding': 'utf8',
+          'store_empty': False,
+          'item_export_kwargs': {
+             'compression': 'GZIP',
+             'times': 'int64',
+             'hasnulls': True,
+             'convertallstrings': False,
+             'writeindex': False,
+             'rowgroupoffset': 50000000,
+             'items_rowgroup': 10000
+          },
+      }
+  }
 There are more storage backend, e.g. Google Cloud. See the documentation linked above.
 
-Finally, you can fine tune your export by configuring the following options in settings.py:
+Finally, you can define in the FEEDS settings various options in 'item_export_kwargs'
 
 .. list-table:: Options for Parquet export
    :widths: 25 25 50
@@ -47,26 +73,26 @@ Finally, you can fine tune your export by configuring the following options in s
    * - Option
      - Default
      - Description
-   * - EXPORTER_PARQUET_COMPRESSION
-     - EXPORTER_PARQUET_COMPRESSION = 'GZIP'
+   * - 'compression'
+     - 'compression' : 'GZIP'
      - Compression to be used in Parquet: 'UNCOMPRESSED', 'GZIP', 'SNAPPY', 'LZO', 'BROTLI','LZ4','ZSTD'. Instead of a string, you can also specify a dict containing compression options (see `here <https://fastparquet.readthedocs.io/en/latest/api.html#fastparquet.write>`_)
-   * - EXPORTER_PARQUET_TIMES
-     - EXPORTER_PARQUET_TIMES = 'int64'
+   * - 'times'
+     - 'times' ; 'int64'
      - type for times 'int64' or 'int96', spark is int96 only
-   * - EXPORTER_PARQUET_CONVERTALLSTRINGS
-     - EXPORTER_PARQUET_CONVERTALLSTRINGS = False
+   * - 'convertallstrings'
+     - 'convertallstrings' : False
      - convert all values to string. recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
-   * - EXPORTER_PARQUET_HASNULLS
-     - EXPORTER_PARQUET_HASNULLS = True
+   * - 'hasnulls'
+     - 'hasnulls' : True
      - can contain nulls
-   * - EXPORTER_PARQUET_WRITEINDEX
-     - EXPORTER_PARQUET_WRITEINDEX = False
+   * - 'writeindex'
+     - 'writeindex' : False
      - write index as extra column
-   * - EXPORTER_PARQUET_ROWGROUPOFFSET
-     - EXPORTER_PARQUET_ROWGROUPOFFSET = 50000000
+   * - 'rowgroupoffset'
+     - 'rowgroupoffset':50000000
      - offset row groups
-   * - EXPORTER_PARQUET_ITEMS_ROWGROUP
-     - EXPORTER_PARQUET_ITEMS_ROWGROUP = 10000
+   * - 'items_rowgroup'
+     - 'items_rowgroup' : 10000
      - how many items per rowgroup, should be several thousands, e.g. between 5,000 and 30,000. The more rows the higher the memory consumption and the better the compression on the final parquet file
 
 

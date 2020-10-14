@@ -29,18 +29,88 @@ You need to configure in your Scrapy project in settings.py the following export
 
 Then you need to configure `FEEDS <https://docs.scrapy.org/en/latest/topics/feed-exports.html#std-setting-FEEDS>`_ in settings.py to define output format and file name.
 
-Local file (e.g. "data-quotes-2020-01-01T10-00-00.avro")::
+Local file (e.g. "data-quotes-2020-01-01T10-00-00.avro") with a schema "Author, text, tags"::
 
-  FEEDS = {'data-%(name)s-%(time)s.avro': {'format':'avro','encoding':'utf8',store_empty': False}} # store as local file containing spider name and scrape datetime, e.g. data-quotes-2020-01-01T10-00-00.avro
-
-S3 file (e.g "s3://mybucket/data-quotes-2020-01-01T10-00-00.avro")::
-
-  FEEDS = {'s3://aws_key:aws_secret@mybucket/data-%(name)s-%(time)s.avro': {'format':'avro','encoding':'utf8',store_empty': False}} # store as s3 file containing spider name and scrape datetime, e.g. e.g. s3://mybucket/data-quotes-2020-01-01T10-00-00.avro
+  FEEDS = {
+        'data-%(name)s-%(time)s.avro': {
+            'format':'avro',
+            'encoding':'utf8',
+            'store_empty': False,
+            'item_export_kwargs': {
+                 'compression': 'deflate',
+                 'compressionlevel': None,
+                 'metadata': None,
+                 'syncinterval': 16000,
+                 'recordcache': 10000,
+                 'syncmarker': None,
+                 'convertallstrings': False,
+                 'validator': None,
+                 'avroschema': {
+                     'doc': 'Some quotes',
+                     'name': 'quotes',
+                     'type': 'record',
+                     'fields': [
+                         {'name': 'text', 'type': 'string'},
+                         {'name': 'author', 'type': {
+                             'type':'array',
+                             'items':'string',
+                             'default':[]
+                             }
+                         },
+                         {'name': 'tags', 'type': {
+                             'type':'array',
+                             'items':'string',
+                             'default':[]
+                             }
+                         },
+                     ]
+                 }
+              }
+        }
+      }
+S3 file (e.g "s3://mybucket/data-quotes-2020-01-01T10-00-00.avro") with a schema "Author, text, tags"::
+     FEEDS = {
+      's3://aws_key:aws_secret@mybucket/data-%(name)s-%(time)s.avro': {
+          'format':'avro',
+          'encoding':'utf8',
+          'store_empty': False,
+          'item_export_kwargs': {
+               'compression': 'deflate',
+               'compressionlevel': None,
+               'metadata': None,
+               'syncinterval': 16000,
+               'recordcache': 10000,
+               'syncmarker': None,
+               'convertallstrings': False,
+               'validator': None,
+               'avroschema': {
+                   'doc': 'Some quotes',
+                   'name': 'quotes',
+                   'type': 'record',
+                   'fields': [
+                       {'name': 'text', 'type': 'string'},
+                       {'name': 'author', 'type': {
+                           'type':'array',
+                           'items':'string',
+                           'default':[]
+                           }
+                       },
+                       {'name': 'tags', 'type': {
+                           'type':'array',
+                           'items':'string',
+                           'default':[]
+                           }
+                       },
+                   ]
+               } 
+            }
+      }
+    }
 
 
 There are more storage backend, e.g. Google Cloud. See the documentation linked above.
 
-Finally, you can fine tune your export by configuring the following options in settings.py:
+Finally, you can define in the FEEDS settings various options in 'item_export_kwargs' (and you need to at least define the AvroSchema)
 
 .. list-table:: Options for Avro export
    :widths: 25 25 50
@@ -49,32 +119,32 @@ Finally, you can fine tune your export by configuring the following options in s
    * - Option
      - Default
      - Description
-   * - EXPORTER_AVRO_COMPRESSION
-     - EXPORTER_AVRO_COMPRESSION = 'deflate'
+   * - 'compression'
+     - 'compression' : 'deflate'
      - Compression to be used in Avro: 'null', 'deflate', 'bzip2', 'snappy', 'zstandard', 'lz4', 'xz'
-   * - EXPORTER_AVRO_COMPRESSIONLEVEL
-     - EXPORTER_AVRO_COMPRESSIONLEVEL = None
+   * - 'compressionlevel'
+     - 'compressionlevel' = None
      - Compression level to be used in Avro: can be an integer if supported by codec
-   * - EXPORTER_AVRO_METADATA
-     - EXPORTER_AVRO_METADATA = None
+   * - 'metadata'
+     - 'metadata' : None
      - Avro metadata (dict)
-   * - EXPORTER_AVRO_SYNCINTERVAL
-     - EXPORTER_AVRO_SYNCINTERVAL = 16000
+   * - 'syncinterval'
+     - 'syncinterval' : 16000
      - sync interval, how many bytes written per block, should be several thousands, the higher the better is the compression, but seek time may increase
-   * - EXPORTER_AVRO_RECORDCACHE
-     - EXPORTER_AVRO_RECORDCACHE = 10000
+   * - 'recordcache'
+     - 'recordcache' : 10000
      - how many records should be written at once, the higher the better the compression, but the more memory is needed
-   * - EXPORTER_AVRO_SYNCMARKER
-     - EXPORTER_AVRO_SYNCMARKER = None
+   * - 'syncmarker'
+     - 'syncmarker' : None
      - bytes, if None then a random byte string is used
-   * - EXPORTER_AVRO_CONVERTALLSTRINGS
-     - EXPORTER_AVRO_CONVERTALLSTRINGS = False
+   * - 'convertallstrings'
+     - 'convertallstrings' : False
      - convert all values to string. recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
-   * - EXPORTER_AVRO_SCHEMASTRING
-     - EXPORTER_AVRO_SCHEMASTRING = None
+   * - 'avroschema'
+     - 'avroschema' : None
      - Mandatory to specify schema. Please name your fields exactly like you name them in your items. Please make sure that the item has always values filled, otherwise you may see errors during scraping. See also `fastavro write <https://fastavro.readthedocs.io/en/latest/writer.html>`_
-   * - EXPORTER_AVRO_VALIDATOR
-     - EXPORTER_AVRO_VALIDATOR = None
+   * - 'validator'
+     - 'validator' : None
      - use fast avro validator when writing, can be None, True (fastavro.validation.validate or a function)
 
 
