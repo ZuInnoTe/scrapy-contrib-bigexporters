@@ -15,4 +15,7 @@ Run Scrapy
 
 Use the following command to run the crawler in Avro format ::
 
-    scrapy crawl quotes_avro -o data.avro -t avro
+    scrapy crawl quotes
+
+
+You will get as an output a file called data.avro in the same folder.
