@@ -47,7 +47,6 @@ Example local file, e.g. data-quotes-2020-01-01T10-00-00.orc::
              'convertallstrings': False,
              'bloomfiltercolumns': None,
              'bloomfilterfpp': 0.05,
-             'structrepr': pyorc.StructRepr.TUPLE,
              'converters': None,
              'metadata': None
           },
@@ -72,7 +71,6 @@ Example S3 file, e.g. s3://mybucket/data-quotes-2020-01-01T10-00-00.orc::
              'convertallstrings': False,
              'bloomfiltercolumns': None,
              'bloomfilterfpp': 0.05,
-             'structrepr': pyorc.StructRepr.TUPLE,
              'converters': None,
              'metadata': None
           },
@@ -118,9 +116,6 @@ Finally, you can define in the FEEDS settings various options in 'item_export_kw
    * - 'bloomfilterfpp'
      - 'bloomfilterfpp': 0.05
      - False positives probability for bloom filters
-   * - 'structrepr'
-     - 'structrepr': pyorc.StructRepr.TUPLE
-     - representation of the ORC struct type, see https://pyorc.readthedocs.io/en/latest/api.html#pyorc.StructRepr
    * - 'converters'
      - 'converters': None
      - Define converters, can be a dictionary, where the keys are pyorc.TypeKind and the values are subclasses of ORCConverter

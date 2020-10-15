@@ -34,7 +34,6 @@ FEEDS = {
            'convertallstrings': False,# convert all values to string. recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
            'bloomfiltercolumns': None, # Define for which columns a bloom filter should be used (list). Bloom filters are very useful for performing access to columns containing few discrete values
            'bloomfilterfpp': 0.05, # False positives probability for bloom filters
-           'structrepr': pyorc.StructRepr.TUPLE, # representation of the ORC struct type, see https://pyorc.readthedocs.io/en/latest/api.html#pyorc.StructRepr
            'converters': None, # Define converters, can be a dictionary, where the keys are pyorc.TypeKind and the values are subclasses of ORCConverter
            'metadata': None # metadata to be added to ORC file value is bytes (e.g. (extra="info".encode() will lead to {'extra': b'info'}))
         },

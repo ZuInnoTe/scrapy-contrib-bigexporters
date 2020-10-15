@@ -183,7 +183,6 @@ FEEDS = {
            'convertallstrings': False,# convert all values to string. recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
            'bloomfiltercolumns': None, # Define for which columns a bloom filter should be used (list). Bloom filters are very useful for performing access to columns containing few discrete values
            'bloomfilterfpp': 0.05, # False positives probability for bloom filters
-           'structrepr': pyorc.StructRepr.TUPLE, # representation of the ORC struct type, see https://pyorc.readthedocs.io/en/latest/api.html#pyorc.StructRepr
            'converters': None, # Define converters, can be a dictionary, where the keys are pyorc.TypeKind and the values are subclasses of ORCConverter
            'metadata': None # metadata to be added to ORC file value is bytes (e.g. (extra="info".encode() will lead to {'extra': b'info'}))
         },
@@ -208,7 +207,6 @@ FEEDS = {
            'convertallstrings': False,# convert all values to string. recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
            'bloomfiltercolumns': None, # Define for which columns a bloom filter should be used (list). Bloom filters are very useful for performing access to columns containing few discrete values
            'bloomfilterfpp': 0.05, # False positives probability for bloom filters
-           'structrepr': pyorc.StructRepr.TUPLE, # representation of the ORC struct type, see https://pyorc.readthedocs.io/en/latest/api.html#pyorc.StructRepr
            'converters': None, # Define converters, can be a dictionary, where the keys are pyorc.TypeKind and the values are subclasses of ORCConverter
            'metadata': None # metadata to be added to ORC file value is bytes (e.g. (extra="info".encode() will lead to {'extra': b'info'}))
         },
@@ -524,7 +522,6 @@ class OrcItemExporter(BaseItemExporter):
             raise RuntimeError("No orc schema defined")
         self.orc_bloomfiltercolumns=options.pop('bloomfiltercolumns',None)
         self.orc_bloomfilterfpp=options.pop('bloomfilterfpp',0.05)
-        self.orc_structrepr=options.pop('bloomfilterfpp',pyorc.StructRepr.TUPLE)
         self.orc_converters=options.pop('converters',None)
         self.orc_metadata=options.pop('metadata',None)
 
@@ -537,20 +534,8 @@ class OrcItemExporter(BaseItemExporter):
         if self.itemcount>self.orc_recordcache:
                 self._flush_table()
         itemrecord=self._get_dict_from_item(item)
-        record=[]
-        # find the order of the columns in the orc schema
-        sortdict = {}
-        for key,value in itemrecord.items():
-            try:
-                keypos=self.orcwriter.schema.find_column_id(key)
-                sortdict[keypos]=key
-            except KeyError:
-                self.logger.debug("Cannot find key in schema: "+key)
-        for keypos in sorted(sortdict.keys()):
-            record.append(itemrecord[sortdict[keypos]])
-        if len(record)>0:
-            self.records.append(tuple(record))
-            self.itemcount+=1
+        self.records.append(itemrecord)
+        self.itemcount+=1
         return item
 
 
@@ -560,7 +545,7 @@ class OrcItemExporter(BaseItemExporter):
         """
         if not SUPPORTED_EXPORTERS['orc']:
             raise RuntimeError("Error: Cannot export to orc. Cannot import pyorc. Have you installed it?")
-        self.orcwriter = pyorc.Writer(self.file, schema=self.orc_schemastring,batch_size=self.orc_batchsize,stripe_size=self.orc_stripesize,compression=self.orc_compression,compression_strategy=self.orc_compressionstrategy,compression_block_size=self.orc_blocksize,bloom_filter_columns=self.orc_bloomfiltercolumns,bloom_filter_fpp=self.orc_bloomfilterfpp,struct_repr=self.orc_structrepr,converters=self.orc_converters)
+        self.orcwriter = pyorc.Writer(self.file, schema=self.orc_schemastring,batch_size=self.orc_batchsize,stripe_size=self.orc_stripesize,compression=self.orc_compression,compression_strategy=self.orc_compressionstrategy,compression_block_size=self.orc_blocksize,bloom_filter_columns=self.orc_bloomfiltercolumns,bloom_filter_fpp=self.orc_bloomfilterfpp,struct_repr=pyorc.StructRepr.DICT,converters=self.orc_converters)
 
 
 
