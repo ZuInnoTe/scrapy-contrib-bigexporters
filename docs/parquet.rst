@@ -40,7 +40,7 @@ Example local file, e.g. data-quotes-2020-01-01T10-00-00.parquet::
              'hasnulls': True,
              'convertallstrings': False,
              'writeindex': False,
-              'rowgroupoffset': 50000000,
+             'rowgroupoffset': 50000000,
              'items_rowgroup': 10000
           },
       }
