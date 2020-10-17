@@ -19,7 +19,7 @@ Requirements
 ============
 
 * Python 3.6+
-* Scrapy 2.3+
+* Scrapy 2.4+
 * Works on Linux, Windows, macOS, BSD
 * Parquet export requires fastparquet 0.4.1+
 * Avro export requires fastavro 1.0.0.post1+
