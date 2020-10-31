@@ -113,6 +113,9 @@ Finally, you can define in the FEEDS settings various options in 'item_export_kw
    * - 'convertallstrings'
      - 'convertallstrings' : False
      - convert all values to string. recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
+   * - 'bloomfiltercolumns'
+     - 'bloomfiltercolumns': None
+     - List of columns (column name as string) for which to provide a bloom filter. Bloom filters are suitable for columns containing categorical values (low to medium cardinality). They can increase performance for filtering on those columns significantly. See also https://orc.apache.org/api/orc-core/org/apache/orc/util/BloomFilter.html
    * - 'bloomfilterfpp'
      - 'bloomfilterfpp': 0.05
      - False positives probability for bloom filters
