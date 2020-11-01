@@ -461,6 +461,7 @@ class AvroItemExporter(BaseItemExporter):
             if len(self.records)>0:
                 if self.firstBlock==False:
                     # reopen file
+                    self.file.close()
                     self.file=open(self.file.name,'a+b')
                 # write cache to avro file
                 fa_writer(self.file, self.avro_parsedschema,self.records,codec=self.avro_compression,sync_interval=self.avro_syncinterval,metadata=self.avro_metadata,validator=self.avro_validator,sync_marker=self.avro_syncmarker,codec_compression_level=self.avro_compressionlevel)
