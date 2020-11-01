@@ -48,6 +48,9 @@ class TestAvroItemExporter(unittest.TestCase):
             os.remove(self.filename)
 
     def test_avro_export_type_schema(self):
+        """
+            Test if file is correctly written with native Python data types
+        """
         # create exporter
         itemExporter=AvroItemExporter(file=self.file,compression='deflate',compressionlevel=None,metadata=None, syncinterval=16000,recordcache= 10000, syncmarker=None,convertallstrings= False,validator=None,
             avroschema= {
@@ -71,11 +74,14 @@ class TestAvroItemExporter(unittest.TestCase):
                 ]
             }
         )
-        self.export_type_schema_recordcache()
+        self.export_type_schema(itemExporter)
 
     def test_avro_export_type_schema_recordcache(self):
+        """
+            Tests if all records are written even if number is larger than record cache
+        """
         # create exporter
-        itemExporter=AvroItemExporter(file=self.file,compression='deflate',compressionlevel=None,metadata=None, syncinterval=16000,recordcache= 10000, syncmarker=None,convertallstrings= False,validator=None,
+        itemExporter=AvroItemExporter(file=self.file,compression='deflate',compressionlevel=None,metadata=None, syncinterval=16000,recordcache= 3, syncmarker=None,convertallstrings= False,validator=None,
             avroschema= {
                 'doc': 'test doc',
                 'name': 'test',
@@ -97,9 +103,9 @@ class TestAvroItemExporter(unittest.TestCase):
                 ]
             }
         )
-        self.export_type_schema_recordcache()
+        self.export_type_schema(itemExporter)
 
-   def export_type_schema_recordcache(self):
+    def export_type_schema(self,itemExporter):
                itemExporter.start_exporting()
                # create and write some test data
                num_records=10
