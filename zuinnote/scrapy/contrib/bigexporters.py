@@ -492,7 +492,6 @@ class OrcItemExporter(BaseItemExporter):
             Initialize exporter
         """
         super().__init__(**kwargs)
-        self.firstBlock=True
         self.file=file # file name
         self.itemcount=0 # initial item count
         self.records=[] # record cache
@@ -573,8 +572,6 @@ class OrcItemExporter(BaseItemExporter):
                 self.itemcount=0
                 # initialize new record cache
                 self.records=[]
-                # reinit file
-                self.firstBlock=False
 
 
     def _get_dict_from_item(self,item):
