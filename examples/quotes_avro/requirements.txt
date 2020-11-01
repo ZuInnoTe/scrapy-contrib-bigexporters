@@ -1,3 +1,3 @@
 fastavro==1.1.0
 Scrapy==2.4.0
-scrapy-contrib-bigexporters==0.2.0
+scrapy-contrib-bigexporters==0.3.0
