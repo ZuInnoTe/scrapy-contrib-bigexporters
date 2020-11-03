@@ -40,7 +40,7 @@ Example local file, e.g. data-quotes-2020-01-01T10-00-00.parquet::
              'hasnulls': True,
              'convertallstrings': False,
              'writeindex': False,
-             'object_encoding': 'infer', 
+             'object_encoding': 'infer',
              'rowgroupoffset': 50000000,
              'items_rowgroup': 10000
           },
@@ -94,7 +94,7 @@ Finally, you can define in the FEEDS settings various options in 'item_export_kw
      - write index as extra column
    * - 'object_encoding'
      - 'object_encoding' : 'infer'
-     - As of version 0.4.0. Data type of columns. Can be str or dictionary in the format {col: type}, and type can be bytes|utf8|json|bson|bool|int|int32|float|decimal, where bytes is assumed if not specified (i.e., no conversion) (see `here <https://fastparquet.readthedocs.io/en/latest/api.html#fastparquet.write>`_)
+     - As of version 0.4.0. Data type of columns. infer is a special type and means that fastparquet tries to detect it automatically. Can be str or dictionary in the format {col: type}, and type can be infer|bytes|utf8|json|bson|bool|int|int32|float|decimal, where bytes is assumed if not specified (i.e., no conversion) (see `here <https://fastparquet.readthedocs.io/en/latest/api.html#fastparquet.write>`_)
    * - 'rowgroupoffset'
      - 'rowgroupoffset':50000000
      - offset row groups
