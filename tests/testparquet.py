@@ -51,7 +51,7 @@ class TestParquetItemExporter(unittest.TestCase):
             Test if file is correctly written with native Python data types
         """
         # create exporter
-        itemExporter=ParquetItemExporter(file=self.file,compression= 'GZIP',times= 'int64', hasnulls=True,convertallstrings= False,writeindex= False,rowgroupoffset=50000000,items_rowgroup=10000)
+        itemExporter=ParquetItemExporter(file=self.file,compression= 'GZIP',times= 'int64', hasnulls=True,convertallstrings= False,writeindex= False,object_encoding='infer',rowgroupoffset=50000000,items_rowgroup=10000)
         self.export_type_schema(itemExporter)
 
     def test_parquet_export_string_schema(self):
@@ -59,7 +59,7 @@ class TestParquetItemExporter(unittest.TestCase):
             Test if file is correctly written with strings
         """
         # create exporter
-        itemExporter=ParquetItemExporter(file=self.file,compression= 'GZIP',times= 'int64', hasnulls=True,convertallstrings= True,writeindex= False,rowgroupoffset=50000000,items_rowgroup=10000)
+        itemExporter=ParquetItemExporter(file=self.file,compression= 'GZIP',times= 'int64', hasnulls=True,convertallstrings= True,writeindex= False,object_encoding='infer',rowgroupoffset=50000000,items_rowgroup=10000)
         self.export_string_schema(itemExporter)
 
     def test_parquet_export_type_schema_recordcache(self):
@@ -67,7 +67,7 @@ class TestParquetItemExporter(unittest.TestCase):
             Tests if all records are written even if number is larger than record cache
         """
         # create exporter
-        itemExporter=ParquetItemExporter(file=self.file,compression= 'GZIP',times= 'int64', hasnulls=True,convertallstrings= False,writeindex= False,rowgroupoffset=50000000,items_rowgroup=3)
+        itemExporter=ParquetItemExporter(file=self.file,compression= 'GZIP',times= 'int64', hasnulls=True,convertallstrings= False,writeindex= False,object_encoding='infer',rowgroupoffset=50000000,items_rowgroup=3)
 
         self.export_type_schema(itemExporter)
 
