@@ -277,6 +277,7 @@ class ParquetItemExporter(BaseItemExporter):
         # Read settings
         self.pq_compression=options.pop('compression','GZIP')
         self.pq_times=options.pop('times','int64')
+        self.pq_objectencoding=options.pop('object_encoding','infer')
         self.pq_convertstr=options.pop('convertallstrings',False)
         self.pq_hasnulls=options.pop('hasnulls',True)
         self.pq_writeindex=options.pop('writeindex',False)
@@ -377,7 +378,7 @@ class ParquetItemExporter(BaseItemExporter):
             if self.firstBlock==True:
                 self.firstBlock=False
                 papp=False
-            fp_write(self.file.name, self.df,append=papp,compression=self.pq_compression,has_nulls=self.pq_hasnulls,write_index=self.pq_writeindex,file_scheme="simple",object_encoding="infer",times=self.pq_times,row_group_offsets=self.pq_rowgroupoffset)
+            fp_write(self.file.name, self.df,append=papp,compression=self.pq_compression,has_nulls=self.pq_hasnulls,write_index=self.pq_writeindex,file_scheme="simple",object_encoding=self.pq_objectencoding,times=self.pq_times,row_group_offsets=self.pq_rowgroupoffset)
             # initialize new data frame for new row group
             self._reset_rowgroup()
 
