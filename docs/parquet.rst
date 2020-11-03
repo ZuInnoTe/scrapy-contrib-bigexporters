@@ -92,7 +92,7 @@ Finally, you can define in the FEEDS settings various options in 'item_export_kw
      - write index as extra column
    * - 'object_encoding'
      - 'object_encoding' : 'infer'
-     - As of vesion 0.4.0. Data type of columns. Can be str or dictionary in the format {col: type}, and type can be bytes|utf8|json|bson|bool|int|int32, where bytes is assumed if not specified (i.e., no conversion) (see `here <https://fastparquet.readthedocs.io/en/latest/api.html#fastparquet.write>`_)
+     - As of vesion 0.4.0. Data type of columns. Can be str or dictionary in the format {col: type}, and type can be bytes|utf8|json|bson|bool|int|int32|float|decimal, where bytes is assumed if not specified (i.e., no conversion) (see `here <https://fastparquet.readthedocs.io/en/latest/api.html#fastparquet.write>`_)
    * - 'rowgroupoffset'
      - 'rowgroupoffset':50000000
      - offset row groups
