@@ -92,8 +92,8 @@ Finally, you can define in the FEEDS settings various options in 'item_export_kw
    * - 'writeindex'
      - 'writeindex' : False
      - write index as extra column
-   * - 'object_encoding'
-     - 'object_encoding' : 'infer'
+   * - 'objectencoding'
+     - 'objectencoding' : 'infer'
      - As of version 0.4.0. Data type of columns. infer is a special type and means that fastparquet tries to detect it automatically. Can be str or dictionary in the format {col: type}, and type can be infer|bytes|utf8|json|bson|bool|int|int32|float|decimal, where bytes is assumed if not specified (i.e., no conversion) (see `here <https://fastparquet.readthedocs.io/en/latest/api.html#fastparquet.write>`_)
    * - 'rowgroupoffset'
      - 'rowgroupoffset':50000000

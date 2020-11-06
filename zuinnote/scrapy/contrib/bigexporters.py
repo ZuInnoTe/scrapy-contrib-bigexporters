@@ -43,7 +43,7 @@ FEEDS = {
            'hasnulls': True,# can contain nulls
            'convertallstrings': False,# convert all values to string. recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
            'writeindex': False, # write index as extra column
-           'object_encoding': 'infer', # schema of data
+           'objectencoding': 'infer', # schema of data
            'rowgroupoffset': 50000000, # offset row groups
            'items_rowgroup': 10000  # how many items per rowgroup, should be several thousands, e.g. between 5,000 and 30,000. The more rows the higher the memory consumption and the better the compression on the final parquet file
         },
@@ -62,7 +62,7 @@ FEEDS = {
            'hasnulls': True,# can contain nulls
            'convertallstrings': False,# convert all values to string. recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
            'writeindex': False, # write index as extra column
-           'object_encoding': 'infer', # schema of data
+           'objectencoding': 'infer', # schema of data
            'rowgroupoffset': 50000000, # offset row groups
            'items_rowgroup': 10000  # how many items per rowgroup, should be several thousands, e.g. between 5,000 and 30,000. The more rows the higher the memory consumption and the better the compression on the final parquet file
         },
@@ -279,7 +279,7 @@ class ParquetItemExporter(BaseItemExporter):
         # Read settings
         self.pq_compression=options.pop('compression','GZIP')
         self.pq_times=options.pop('times','int64')
-        self.pq_objectencoding=options.pop('object_encoding','infer')
+        self.pq_objectencoding=options.pop('objectencoding','infer')
         self.pq_convertstr=options.pop('convertallstrings',False)
         self.pq_hasnulls=options.pop('hasnulls',True)
         self.pq_writeindex=options.pop('writeindex',False)
