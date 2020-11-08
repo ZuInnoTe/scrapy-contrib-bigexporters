@@ -139,7 +139,7 @@ If you want to use special types of compression then additional libraries may be
    * - Compression Codec
      - Description
      - Additional library
-   * - None = 0
+   * - NONE = 0
      - No compression
      - built-in
    * - ZLIB = 1
