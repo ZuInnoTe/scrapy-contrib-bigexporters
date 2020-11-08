@@ -91,7 +91,7 @@ Finally, you can define in the FEEDS settings various options in 'item_export_kw
      - Description
    * - 'compression'
      - 'compression' : pyorc.CompressionKind.ZLIB
-     - compression to be used in orc, see pyorc.CompressionKind (None = 0, ZLIB = 1, SNAPPY = 2, LZO = 3, LZ4 = 4, ZSTD = 5
+     - compression to be used in orc, see pyorc.CompressionKind (NONE = 0, ZLIB = 1, SNAPPY = 2, LZO = 3, LZ4 = 4, ZSTD = 5
    * - 'compressionstrategy'
      - 'compressionstrategy' = pyorc.CompressionStrategy.SPEED
      - compression strategy to be used in orc, see pyorc.CompressionStrategy (SPEED = 0, COMPRESSION = 1)
