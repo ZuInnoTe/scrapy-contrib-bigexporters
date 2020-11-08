@@ -146,7 +146,7 @@ Finally, you can define in the FEEDS settings various options in 'item_export_kw
      - Mandatory to specify schema. Please name your fields exactly like you name them in your items. Please make sure that the item has always values filled, otherwise you may see errors during scraping. See also `fastavro write <https://fastavro.readthedocs.io/en/latest/writer.html>`_
    * - 'validator'
      - 'validator' : None
-     - use fast avro validator when writing, can be None, True (fastavro.validation.validate or a function)
+     - use fast avro validator when writing, can be None, True (fastavro.validation.validate is used) or a custom function
 
 
 Additional libraries
