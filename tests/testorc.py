@@ -40,7 +40,7 @@ class TestOrcItemExporter(unittest.TestCase):
         self.file=open(filename,'wb')
 
     def tearDown(self):
-        # open file
+        # close file
         self.file.close()
 
         os.close(self.fd)
