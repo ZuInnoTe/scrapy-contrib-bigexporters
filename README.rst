@@ -33,7 +33,7 @@ The quick way (pip)::
 
     pip install scrapy-contrib-bigexporters
 
-Alternatively, you can install it from `conda-forge <https://anaconda.org/conda-forge>`_::
+Alternatively, you can install it from `conda-forge <https://anaconda.org/conda-forge/scrapy-contrib-bigexporters>`_::
 
     conda install -c conda-forge scrapy-contrib-bigexporters
 
