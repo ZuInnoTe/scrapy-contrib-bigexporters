@@ -29,9 +29,13 @@ Requirements
 Install
 =======
 
-The quick way::
+The quick way (pip)::
 
     pip install scrapy-contrib-bigexporters
+
+Alternatively, you can install it from `conda-forge <https://anaconda.org/conda-forge>`_::
+
+    conda install -c conda-forge scrapy-contrib-bigexporters
 
 Depending on which format you want to use you need to install one or more of the following libraries.
 
