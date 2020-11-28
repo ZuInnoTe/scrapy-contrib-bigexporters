@@ -126,10 +126,10 @@ If you want to use special types of compression then additional libraries may be
      - `python-snappy <https://pypi.org/project/python-snappy/>`_
    * - 'LZO'
      - LZO compression
-     - `lzo <https://pypi.org/project/lzo/>`_
+     - `python-lzo <https://pypi.org/project/python-lzo/>`_
    * - 'BROTLI'
      - BROTLI compression
-     - `brotli <https://pypi.org/project/brotli/>`_
+     - `brotlipy <https://pypi.org/project/brotlipy/>`_
    * - 'ZSTD'
      - Zstandard compression
      - `zstandard <https://pypi.org/project/zstandard/>`_

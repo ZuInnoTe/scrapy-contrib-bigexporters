@@ -150,7 +150,7 @@ If you want to use special types of compression then additional libraries may be
      - `python-snappy <https://pypi.org/project/python-snappy/>`_
    * - LZO = 3
      - LZO compression
-     - `lzo <https://pypi.org/project/lzo/>`_
+     - `python-lzo <https://pypi.org/project/python-lzo/>`_
    * - LZ4 = 4
      - LZ4 compression
      - `lz4 <https://pypi.org/project/lz4/>`_
