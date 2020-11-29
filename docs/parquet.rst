@@ -128,8 +128,8 @@ If you want to use special types of compression then additional libraries may be
      - LZO compression
      - `python-lzo <https://pypi.org/project/python-lzo/>`_
    * - 'BROTLI'
-     - BROTLI compression
-     - `brotlipy <https://pypi.org/project/brotlipy/>`_
+     - BROTLI compression (note: scrapy requires brotlipy, but fastparquet brotli)
+     - `brotli <https://pypi.org/project/brotli/>`_
    * - 'ZSTD'
      - Zstandard compression
      - `zstandard <https://pypi.org/project/zstandard/>`_
