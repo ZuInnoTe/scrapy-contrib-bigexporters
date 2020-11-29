@@ -81,8 +81,8 @@ Finally, you can define in the FEEDS settings various options in 'item_export_kw
      - 'compression' : 'GZIP'
      - Compression to be used in Parquet: 'UNCOMPRESSED', 'GZIP', 'SNAPPY', 'LZO', 'BROTLI','LZ4','ZSTD'. Instead of a string, you can also specify a dict containing compression options (see `here <https://fastparquet.readthedocs.io/en/latest/api.html#fastparquet.write>`_)
    * - 'times'
-     - 'times' ; 'int64'
-     - type for times 'int64' or 'int96', spark is int96 only
+     - 'times' : 'int64'
+     - type for times 'int64' or 'int96', older spark versions are int96 only
    * - 'convertallstrings'
      - 'convertallstrings' : False
      - convert all values to string. recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
