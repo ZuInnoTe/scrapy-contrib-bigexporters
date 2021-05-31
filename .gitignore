@@ -1,3 +1,9 @@
+# data
+*.avro
+*.parquet
+*.parq
+*.orc
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -142,3 +148,12 @@ envbigexporter/
 
 # metadata
 .DS_Store
+
+# VS Codium
+*.code-workspace
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/
