@@ -32,7 +32,8 @@ avro = [
     "fastavro>=1.1.0"
 ]
 parquet = [
-    "fastparquet>=0.4.1"
+    "fastparquet>=0.4.1",
+    "pandas>=1.1.0"
 ]
 orc = [
     "pyorc>=0.4.0"
