@@ -9,7 +9,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-            python-version: '3.7' 
+            python-version: '3.8' 
             architecture: 'x64' 
       - name: Show Python version
         run: python --version
