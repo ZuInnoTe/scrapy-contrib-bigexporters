@@ -14,7 +14,17 @@ jobs:
       - name: Show Python version
         run: python --version
       - name: Install environment
-        run: pip install -r build_requirements.txt
+        run: | 
+          pip install flip==3.7.1
+          flit install
+      - name: Building library
+        run: |
+          export SOURCE_DATE_EPOCH=$(date +%s)
+          flit build
+      - name: Codeanalysis
+        run: prospector --profile .prospector.yaml --zero-exit
       - name: Run unit test
-        run: python -m unittest
+        run: |
+           coverage run -m unittest
+           coverage report
          
