@@ -1,5 +1,0 @@
-fastavro==1.5.1
-fastparquet==0.8.1
-pyorc==0.6.0
-pandas==1.4.0
-Scrapy==2.5.1
