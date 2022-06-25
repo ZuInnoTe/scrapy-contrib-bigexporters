@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.4.0] - 2022-06-23
+## [0.4.0] - 2022-06-25
 * Added: Migrate to Pandas concat instead of append due to depreciation [#4](https://github.com/ZuInnoTe/scrapy-contrib-bigexporters/issues/4)
 * Added: Add basic Github Actions workflow [#5](https://github.com/ZuInnoTe/scrapy-contrib-bigexporters/issues/5)
 * Added: Add support for pyproject.toml [#6](https://github.com/ZuInnoTe/scrapy-contrib-bigexporters/issues/6)
