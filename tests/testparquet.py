@@ -22,6 +22,7 @@ SOFTWARE.
 import unittest
 import tempfile
 import datetime
+from dateutil.tz import tzutc
 import os
 
 import scrapy
@@ -84,7 +85,7 @@ class TestParquetItemExporter(unittest.TestCase):
                     l.add_value('fbool',False)
                     datetime_str = '2020-02-29T11:12:13'
                     datetime_fmt='%Y-%m-%dT%H:%M:%S'
-                    datetime_obj = datetime.datetime.strptime(datetime_str,datetime_fmt)
+                    datetime_obj = datetime.datetime.strptime(datetime_str,datetime_fmt).astimezone(tzutc())
                     l.add_value('fdatetime',datetime_obj.timestamp())
                     itemExporter.export_item(l.load_item())
                itemExporter.finish_exporting()
@@ -116,7 +117,7 @@ class TestParquetItemExporter(unittest.TestCase):
                 l.add_value('fbool',False)
                 datetime_str = '2020-02-29T11:12:13'
                 datetime_fmt='%Y-%m-%dT%H:%M:%S'
-                datetime_obj = datetime.datetime.strptime(datetime_str,datetime_fmt)
+                datetime_obj = datetime.datetime.strptime(datetime_str,datetime_fmt).astimezone(tzutc())
                 l.add_value('fdatetime',datetime_obj.timestamp())
                 itemExporter.export_item(l.load_item())
            itemExporter.finish_exporting()
