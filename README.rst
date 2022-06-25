@@ -69,5 +69,5 @@ Source
 
 The source is available at:
 
-* Codeberg (an European hosted Git for Open Source): https://codeberg.org/ZuInnoTe/scrapy-contrib-bigexporters
+* Codeberg (a non-commercial European hosted Git for Open Source): https://codeberg.org/ZuInnoTe/scrapy-contrib-bigexporters
 * Github (an US hosted commercial Git platform): https://github.com/ZuInnoTe/scrapy-contrib-bigexporters
