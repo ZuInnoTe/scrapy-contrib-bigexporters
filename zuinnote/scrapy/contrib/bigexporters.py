@@ -297,7 +297,7 @@ class ParquetItemExporter(BaseItemExporter):
         if self.itemcount>self.pq_items_rowgroup:
             self._flush_table()
         # Add the item to data frame
-        self.df=self.df.append(self._get_df_from_item(item),ignore_index=True)
+        self.df=pd.concat([self.df, self._get_df_from_item(item)])
         self.itemcount+=1
         return item
 
@@ -353,7 +353,7 @@ class ParquetItemExporter(BaseItemExporter):
                 row[column]=value
         if self.pq_convertstr==True:
           return pd.DataFrame(row,index=    [0]).astype(str)
-        return row
+        return pd.DataFrame.from_dict([row])
 
     def _reset_rowgroup(self):
         """
