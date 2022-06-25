@@ -46,7 +46,7 @@ setup(
     maintainer='ZuInnoTe',
     maintainer_email='zuinnote@gmail.com',
     url = 'https://github.com/zuinnote/scrapy-contrib-bigexporters',
-    version='0.3.0',
+    version='0.4.0',
     classifiers=[
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
