@@ -63,3 +63,9 @@ See here for configuring the exporter in settings:
 * `Avro <https://github.com/ZuInnoTe/scrapy-contrib-bigexporters/blob/master/docs/avro.rst>`_
 * `Parquet <https://github.com/ZuInnoTe/scrapy-contrib-bigexporters/blob/master/docs/parquet.rst>`_
 * `ORC <https://github.com/ZuInnoTe/scrapy-contrib-bigexporters/blob/master/docs/orc.rst>`_
+
+Source
+======
+The source is available at:
+* Codeberg (an European hosted Git for Open Source): https://codeberg.org/ZuInnoTe/scrapy-contrib-bigexporters
+* Github (an US hosted commercial Git platform): https://github.com/ZuInnoTe/scrapy-contrib-bigexporters
