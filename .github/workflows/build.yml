@@ -14,10 +14,7 @@ jobs:
       - name: Show Python version
         run: python --version
       - name: Install environment
-        run: |
-             python -m venv env
-             source env/bin/activate
-             pip install -r build_requirements.txt
+        run: pip install -r build_requirements.txt
       - name: Run unit test
         run: python -m unittest
          
