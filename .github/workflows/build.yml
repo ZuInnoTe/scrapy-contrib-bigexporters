@@ -27,10 +27,14 @@ jobs:
         run: |
            coverage run -m unittest
            coverage report
+           coverage json
+           coverage lcov
       - name: Upload the build output
         uses: actions/upload-artifact@v3
         with:
           name: build-output
           path: |
              ./prospector.json
+             ./coverage.json
+             ./coverage.lcov
           retention-days: 2
