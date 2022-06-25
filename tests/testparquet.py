@@ -22,7 +22,6 @@ SOFTWARE.
 import unittest
 import tempfile
 import datetime
-from dateutil.tz import tzutc
 import os
 
 import scrapy
@@ -85,7 +84,7 @@ class TestParquetItemExporter(unittest.TestCase):
                     l.add_value('fbool',False)
                     datetime_str = '2020-02-29T11:12:13'
                     datetime_fmt='%Y-%m-%dT%H:%M:%S'
-                    datetime_obj = datetime.datetime.strptime(datetime_str,datetime_fmt).astimezone(tzutc())
+                    datetime_obj = datetime.datetime.strptime(datetime_str,datetime_fmt)
                     l.add_value('fdatetime',datetime_obj.timestamp())
                     itemExporter.export_item(l.load_item())
                itemExporter.finish_exporting()
@@ -117,8 +116,8 @@ class TestParquetItemExporter(unittest.TestCase):
                 l.add_value('fbool',False)
                 datetime_str = '2020-02-29T11:12:13'
                 datetime_fmt='%Y-%m-%dT%H:%M:%S'
-                datetime_obj = datetime.datetime.strptime(datetime_str,datetime_fmt).astimezone(tzutc())
-                l.add_value('fdatetime',datetime_obj.timestamp())
+                datetime_obj = datetime.datetime.strptime(datetime_str,datetime_fmt)
+                l.add_value('fdatetime',datetime_obj.replace(tzinfo=datetime.timezone.utc).timestamp())
                 itemExporter.export_item(l.load_item())
            itemExporter.finish_exporting()
            self.file.close()
@@ -132,7 +131,7 @@ class TestParquetItemExporter(unittest.TestCase):
                    self.assertEqual("2.5",record.get('ffloat',None),msg="Float data is read correctly")
                    self.assertEqual("10",record.get('fint',None),msg="Int data is read correctly")
                    self.assertEqual("False",record.get('fbool',None),msg="Bool data is read correctly")
-                   self.assertEqual("1582971133.0",record.get('fdatetime',None),msg="DateTime data is read correctly")
+                   self.assertEqual("1582974733.0",record.get('fdatetime',None),msg="DateTime data is read correctly")
                    rcount+=1
            self.assertEqual(rcount,10,msg="Number of records read corresponds to number of records written")
 
