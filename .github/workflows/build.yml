@@ -15,7 +15,7 @@ jobs:
         run: python --version
       - name: Install environment
         run: | 
-          pip install flip==3.7.1
+          pip install flit==3.7.1
           flit install
       - name: Building library
         run: |
