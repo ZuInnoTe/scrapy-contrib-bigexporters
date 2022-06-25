@@ -1,0 +1,35 @@
+output-format: json
+
+strictness: medium
+test-warnings: true
+doc-warnings: false
+
+
+ignore-paths:
+  - docs
+
+ignore-patterns:
+  - (^|/)skip(this)?(/|$)
+
+pylint:
+  options:
+     max-line-length: 88
+     
+bandit:
+  run: true
+  options:
+     config: .bandit.yml
+mypy:
+  run: false
+
+pycodestyle:
+  disable:
+    - W602
+    - W603
+  enable:
+    - W601
+  options:
+    max-line-length: 88
+
+mccabe:
+  run: true
