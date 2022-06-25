@@ -17,7 +17,7 @@ jobs:
         run: |
              python -m venv env
              source env/bin/activate
-             pip install -f build_requirements.txt
+             pip install -r build_requirements.txt
       - name: Run unit test
         run: python -m unittest
          
