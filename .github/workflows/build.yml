@@ -4,6 +4,13 @@ jobs:
   build-dev:
     runs-on: ubuntu-latest
     steps:
+      - name: Upload the build output
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-output
+          path: |
+             prospector.json
+          retention-days: 2
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Setup Python
@@ -22,7 +29,7 @@ jobs:
           export SOURCE_DATE_EPOCH=$(date +%s)
           flit build
       - name: Codeanalysis
-        run: prospector --profile .prospector.yaml --zero-exit
+        run: prospector --profile .prospector.yaml --zero-exit > prospector.json
       - name: Run unit test
         run: |
            coverage run -m unittest
