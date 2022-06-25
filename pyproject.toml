@@ -1,0 +1,88 @@
+[build-system]
+requires = ["flit_core >=3.6.0,<4"]
+build-backend = "flit_core.buildapi"
+[project]
+name = "scrapy-contrib-bigexporters"
+authors = [
+    {name = "Jörn Franke", email = "zuinnote@gmail.com"},
+]
+version = "0.4.0"
+description = "Scrapy exporter for Big Data formats"
+readme = "README.rst"
+classifiers = ["Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: Other/Proprietary License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Software Development :: Libraries",
+    "Operating System :: OS Independent",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: POSIX",
+    "Operating System :: Unix",
+    "Operating System :: MacOS"
+]
+
+requires-python = ">=3.6"
+dependencies = [
+    "Scrapy>=2.4.0"
+]
+[project.optional-dependencies]
+avro = [
+    "fastavro>=1.1.0"
+]
+parquet = [
+    "fastparquet>=0.4.1"
+]
+orc = [
+    "pyorc>=0.4.0"
+]
+test = [
+    "coverage>=6.3",
+    "tox>=3.25.0",
+    "pytest>=7.1.0"
+]
+doc = [
+    "sphinx>=4.4.0"
+]
+dev = [
+    "black>=22.3.0",
+    "prospector>=1.7.0",
+    "pylint>=2.11.1",
+    "bandit>=1.7.1",
+    "pycodestyle>=2.8.0",
+    "mccabe>=0.6.1",
+    "mypy>=0.950"
+]
+[project.urls]
+homepage = "https://codeberg.org/ZuInnoTe/scrapy-contrib-bigexporters"
+documentation = "https://codeberg.org/ZuInnoTe/scrapy-contrib-bigexporters"
+source = "https://codeberg.org/ZuInnoTe/scrapy-contrib-bigexporters"
+download = "https://codeberg.org/ZuInnoTe/scrapy-contrib-bigexporters"
+tracker = "https://github.com/ZuInnoTe/scrapy-contrib-bigexporters/issues"
+
+[tool.pytest.ini_options]
+addopts = "-ra -q"
+testpaths = [
+    "src/tests"
+]
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+isolated_build = True
+[testenv]
+deps = pytest >= 7.0.0, <8
+commands = pytest
+"""
+
+[tool.flit.sdist]
+exclude = [".pypirc"]
+
+ 
+[tool.flit.module]
+name = "zuinnote"
