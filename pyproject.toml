@@ -69,7 +69,7 @@ tracker = "https://github.com/ZuInnoTe/scrapy-contrib-bigexporters/issues"
 [tool.pytest.ini_options]
 addopts = "-ra -q"
 testpaths = [
-    "src/tests"
+    "tests"
 ]
 [tool.tox]
 legacy_tox_ini = """
