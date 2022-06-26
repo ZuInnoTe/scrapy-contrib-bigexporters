@@ -21,7 +21,9 @@ jobs:
         run: |
           export SOURCE_DATE_EPOCH=$(date +%s)
           flit build
-      - name: Codeanalysis
+     - name: Code formatting
+        run: black --check .  
+      - name: Code analysis
         run: prospector --profile .prospector.yaml --zero-exit > ./prospector.json
       - name: Run unit test
         run: |

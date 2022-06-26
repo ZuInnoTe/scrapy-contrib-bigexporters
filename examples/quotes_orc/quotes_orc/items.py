@@ -6,11 +6,10 @@
 import scrapy
 from itemloaders.processors import Join
 
+
 class QuotesOrcItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-    text = scrapy.Field(
-        output_processor=Join()
-    )
+    text = scrapy.Field(output_processor=Join())
     author = scrapy.Field()
     tags = scrapy.Field()

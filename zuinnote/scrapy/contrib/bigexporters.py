@@ -230,227 +230,241 @@ SUPPORTED_EXPORTERS = {}
 try:
     from fastparquet import write as fp_write
     import pandas as pd
-    SUPPORTED_EXPORTERS['parquet']=True
-    logging.getLogger().info("Successfully imported fastparquet. Export to parquet supported.")
+
+    SUPPORTED_EXPORTERS["parquet"] = True
+    logging.getLogger().info(
+        "Successfully imported fastparquet. Export to parquet supported."
+    )
 except ImportError:
-    SUPPORTED_EXPORTERS['parquet']=False
+    SUPPORTED_EXPORTERS["parquet"] = False
 
 try:
     from fastavro import writer as fa_writer, parse_schema as fa_parse_schema
-    SUPPORTED_EXPORTERS['avro']=True
-    logging.getLogger().info("Successfully imported fastavro. Export to avro supported.")
+
+    SUPPORTED_EXPORTERS["avro"] = True
+    logging.getLogger().info(
+        "Successfully imported fastavro. Export to avro supported."
+    )
 except ImportError:
-    SUPPORTED_EXPORTERS['avro']=False
+    SUPPORTED_EXPORTERS["avro"] = False
 
 try:
     import pyorc
-    SUPPORTED_EXPORTERS['orc']=True
+
+    SUPPORTED_EXPORTERS["orc"] = True
     logging.getLogger().info("Successfully imported pyorc. Export to orc supported.")
 except ImportError:
-    SUPPORTED_EXPORTERS['orc']=False
+    SUPPORTED_EXPORTERS["orc"] = False
 
 
 """
   Parquet exporter
 """
 
-class ParquetItemExporter(BaseItemExporter):
 
+class ParquetItemExporter(BaseItemExporter):
     def __init__(self, file, dont_fail=False, **kwargs):
         """
-            Initialize exporter
+        Initialize exporter
         """
         super().__init__(**kwargs)
-        self.file=file # file name
-        self.itemcount=0 # initial item count
-        self.columns=[] # initial columns to export
+        self.file = file  # file name
+        self.itemcount = 0  # initial item count
+        self.columns = []  # initial columns to export
         self.logger = logging.getLogger()
         self._configure(kwargs, dont_fail=dont_fail)
-
 
     def _configure(self, options, dont_fail=False):
         """Configure the exporter by poping options from the ``options`` dict.
         If dont_fail is set, it won't raise an exception on unexpected options
         (useful for using with keyword arguments in subclasses ``__init__`` methods)
         """
-        self.encoding = options.pop('encoding', None)
-        self.fields_to_export = options.pop('fields_to_export', None)
-        self.export_empty_fields = options.pop('export_empty_fields', False)
+        self.encoding = options.pop("encoding", None)
+        self.fields_to_export = options.pop("fields_to_export", None)
+        self.export_empty_fields = options.pop("export_empty_fields", False)
         # Read settings
-        self.pq_compression=options.pop('compression','GZIP')
-        self.pq_times=options.pop('times','int64')
-        self.pq_objectencoding=options.pop('objectencoding','infer')
-        self.pq_convertstr=options.pop('convertallstrings',False)
-        self.pq_hasnulls=options.pop('hasnulls',True)
-        self.pq_writeindex=options.pop('writeindex',False)
-        self.pq_items_rowgroup=options.pop('items_rowgroup',10000)
-        self.pq_rowgroupoffset=options.pop('rowgroupoffset',50000000)
+        self.pq_compression = options.pop("compression", "GZIP")
+        self.pq_times = options.pop("times", "int64")
+        self.pq_objectencoding = options.pop("objectencoding", "infer")
+        self.pq_convertstr = options.pop("convertallstrings", False)
+        self.pq_hasnulls = options.pop("hasnulls", True)
+        self.pq_writeindex = options.pop("writeindex", False)
+        self.pq_items_rowgroup = options.pop("items_rowgroup", 10000)
+        self.pq_rowgroupoffset = options.pop("rowgroupoffset", 50000000)
 
     def export_item(self, item):
         """
-            Export a specific item to the file
+        Export a specific item to the file
         """
         # Initialize writer
-        if len(self.columns)==0:
+        if len(self.columns) == 0:
             self._init_table(item)
         # Create a new row group to write
-        if self.itemcount>self.pq_items_rowgroup:
+        if self.itemcount > self.pq_items_rowgroup:
             self._flush_table()
         # Add the item to data frame
-        self.df=pd.concat([self.df, self._get_df_from_item(item)])
-        self.itemcount+=1
+        self.df = pd.concat([self.df, self._get_df_from_item(item)])
+        self.itemcount += 1
         return item
-
 
     def start_exporting(self):
         """
-            Triggered when Scrapy starts exporting. Useful to configure headers etc.
+        Triggered when Scrapy starts exporting. Useful to configure headers etc.
         """
-        if not SUPPORTED_EXPORTERS['parquet']:
-            raise RuntimeError("Error: Cannot export to parquet. Cannot import fastparquet. Have you installed it?")
-        self.firstBlock=True # first block of parquet file
-
+        if not SUPPORTED_EXPORTERS["parquet"]:
+            raise RuntimeError(
+                "Error: Cannot export to parquet. Cannot import fastparquet. Have you installed it?"
+            )
+        self.firstBlock = True  # first block of parquet file
 
     def finish_exporting(self):
         """
-            Triggered when Scrapy ends exporting. Useful to shutdown threads, close files etc.
+        Triggered when Scrapy ends exporting. Useful to shutdown threads, close files etc.
         """
         self._flush_table()
 
-    def _get_columns(self,item):
+    def _get_columns(self, item):
         """
-         Determines the columns of an item
+        Determines the columns of an item
         """
         if isinstance(item, dict):
-        # for dicts try using fields of the first item
-            self.columns= list(item.keys())
+            # for dicts try using fields of the first item
+            self.columns = list(item.keys())
         else:
             # use fields declared in Item
             self.columns = list(item.fields.keys())
 
-
-    def _init_table(self,item):
+    def _init_table(self, item):
         """
-            Initializes table for parquet file
+        Initializes table for parquet file
         """
         # initialize columns
         self._get_columns(item)
         self._reset_rowgroup()
 
-
-
-    def _get_df_from_item(self,item):
+    def _get_df_from_item(self, item):
         """
-            Get the dataframe from item
+        Get the dataframe from item
         """
-        row={}
-        fields = dict(self._get_serialized_fields(item, default_value="",include_empty=True))
+        row = {}
+        fields = dict(
+            self._get_serialized_fields(item, default_value="", include_empty=True)
+        )
         for column in self.columns:
-            if self.pq_convertstr==True:
-                row[column]=str(fields.get(column,None))
+            if self.pq_convertstr == True:
+                row[column] = str(fields.get(column, None))
             else:
-                value=fields.get(column,None)
-                row[column]=value
-        if self.pq_convertstr==True:
-          return pd.DataFrame(row,index=    [0]).astype(str)
+                value = fields.get(column, None)
+                row[column] = value
+        if self.pq_convertstr == True:
+            return pd.DataFrame(row, index=[0]).astype(str)
         return pd.DataFrame.from_dict([row])
 
     def _reset_rowgroup(self):
         """
-            Reset dataframe for writing
+        Reset dataframe for writing
         """
-        if self.pq_convertstr==False: # auto determine schema
+        if self.pq_convertstr == False:  # auto determine schema
             # initialize df
-            self.df= pd.DataFrame(columns=self.columns)
+            self.df = pd.DataFrame(columns=self.columns)
         else:
             # initialize df with zero strings to derive correct schema
-            self.df= pd.DataFrame(columns=self.columns).astype(str)
-
-
+            self.df = pd.DataFrame(columns=self.columns).astype(str)
 
     def _flush_table(self):
         """
-            Writes the current row group to parquet file
+        Writes the current row group to parquet file
         """
-        if len(self.df.index)>0:
+        if len(self.df.index) > 0:
             # reset written entries
-            self.itemcount=0
+            self.itemcount = 0
             # write existing dataframe as rowgroup to parquet file
-            papp=True
-            if self.firstBlock==True:
-                self.firstBlock=False
-                papp=False
-            fp_write(self.file.name, self.df,append=papp,compression=self.pq_compression,has_nulls=self.pq_hasnulls,write_index=self.pq_writeindex,file_scheme="simple",object_encoding=self.pq_objectencoding,times=self.pq_times,row_group_offsets=self.pq_rowgroupoffset)
+            papp = True
+            if self.firstBlock == True:
+                self.firstBlock = False
+                papp = False
+            fp_write(
+                self.file.name,
+                self.df,
+                append=papp,
+                compression=self.pq_compression,
+                has_nulls=self.pq_hasnulls,
+                write_index=self.pq_writeindex,
+                file_scheme="simple",
+                object_encoding=self.pq_objectencoding,
+                times=self.pq_times,
+                row_group_offsets=self.pq_rowgroupoffset,
+            )
             # initialize new data frame for new row group
             self._reset_rowgroup()
+
 
 """
   Avro exporter
 """
-class AvroItemExporter(BaseItemExporter):
 
+
+class AvroItemExporter(BaseItemExporter):
     def __init__(self, file, dont_fail=False, **kwargs):
         """
-            Initialize exporter
+        Initialize exporter
         """
         super().__init__(**kwargs)
-        self.firstBlock=True
-        self.file=file # file name
-        self.itemcount=0 # initial item count
-        self.records=[] # record cache
+        self.firstBlock = True
+        self.file = file  # file name
+        self.itemcount = 0  # initial item count
+        self.records = []  # record cache
         self.logger = logging.getLogger()
         self._configure(kwargs, dont_fail=dont_fail)
-
 
     def _configure(self, options, dont_fail=False):
         """Configure the exporter by poping options from the ``options`` dict.
         If dont_fail is set, it won't raise an exception on unexpected options
         (useful for using with keyword arguments in subclasses ``__init__`` methods)
         """
-        self.encoding = options.pop('encoding', None)
-        self.fields_to_export = options.pop('fields_to_export', None)
-        self.export_empty_fields = options.pop('export_empty_fields', False)
+        self.encoding = options.pop("encoding", None)
+        self.fields_to_export = options.pop("fields_to_export", None)
+        self.export_empty_fields = options.pop("export_empty_fields", False)
         # Read settings
-        self.avro_compression=options.pop('compression','deflate')
-        self.avro_compressionlevel=options.pop('compressionlevel',None)
-        self.avro_convertstr=options.pop('convertallstrings',False)
-        self.avro_schema=options.pop('avroschema','')
-        if self.avro_schema=='':
+        self.avro_compression = options.pop("compression", "deflate")
+        self.avro_compressionlevel = options.pop("compressionlevel", None)
+        self.avro_convertstr = options.pop("convertallstrings", False)
+        self.avro_schema = options.pop("avroschema", "")
+        if self.avro_schema == "":
             raise RuntimeError("No avro schema defined")
-        self.avro_parsedschema=None
-        self.avro_validator=options.pop('validator',None)
-        self.avro_syncinterval=options.pop('syncinterval',16000)
-        self.avro_syncmarker=options.pop('syncmarker',None)
-        self.avro_recordcache=options.pop('recordcache',10000)
-        self.avro_metadata=options.pop('metadata')
-
+        self.avro_parsedschema = None
+        self.avro_validator = options.pop("validator", None)
+        self.avro_syncinterval = options.pop("syncinterval", 16000)
+        self.avro_syncmarker = options.pop("syncmarker", None)
+        self.avro_recordcache = options.pop("recordcache", 10000)
+        self.avro_metadata = options.pop("metadata")
 
     def export_item(self, item):
         """
-            Export a specific item to the file
+        Export a specific item to the file
         """
         if self.avro_parsedschema is None:
-            self.avro_parsedschema=fa_parse_schema(self.avro_schema)
+            self.avro_parsedschema = fa_parse_schema(self.avro_schema)
         # flush cache to avro file
-        if self.itemcount>self.avro_recordcache:
-                self._flush_table()
-        record=self._get_dict_from_item(item)
+        if self.itemcount > self.avro_recordcache:
+            self._flush_table()
+        record = self._get_dict_from_item(item)
         self.records.append(record)
-        self.itemcount+=1
+        self.itemcount += 1
         return item
-
 
     def start_exporting(self):
         """
-            Triggered when Scrapy starts exporting. Useful to configure headers etc.
+        Triggered when Scrapy starts exporting. Useful to configure headers etc.
         """
-        if not SUPPORTED_EXPORTERS['avro']:
-            raise RuntimeError("Error: Cannot export to avro. Cannot import fastavro. Have you installed it?")
-
+        if not SUPPORTED_EXPORTERS["avro"]:
+            raise RuntimeError(
+                "Error: Cannot export to avro. Cannot import fastavro. Have you installed it?"
+            )
 
     def finish_exporting(self):
         """
-            Triggered when Scrapy ends exporting. Useful to shutdown threads, close files etc.
+        Triggered when Scrapy ends exporting. Useful to shutdown threads, close files etc.
         """
         # flush last items from records cache
         self._flush_table()
@@ -458,105 +472,127 @@ class AvroItemExporter(BaseItemExporter):
         self.file.close()
 
     def _flush_table(self):
-            """
-                Writes the current record cache to avro file
-            """
-            if len(self.records)>0:
-                if self.firstBlock==False:
-                    # reopen file
-                    self.file.close()
-                    self.file=open(self.file.name,'a+b')
-                # write cache to avro file
-                fa_writer(self.file, self.avro_parsedschema,self.records,codec=self.avro_compression,sync_interval=self.avro_syncinterval,metadata=self.avro_metadata,validator=self.avro_validator,sync_marker=self.avro_syncmarker,codec_compression_level=self.avro_compressionlevel)
-                # reset written entries
-                self.itemcount=0
-                # initialize new record cache
-                self.records=[]
-                # reinit file
-                self.firstBlock=False
-
-
-    def _get_dict_from_item(self,item):
         """
-            Returns the columns and values from the item
+        Writes the current record cache to avro file
         """
-        fields = dict(self._get_serialized_fields(item, default_value="",include_empty=True))
+        if len(self.records) > 0:
+            if self.firstBlock == False:
+                # reopen file
+                self.file.close()
+                self.file = open(self.file.name, "a+b")
+            # write cache to avro file
+            fa_writer(
+                self.file,
+                self.avro_parsedschema,
+                self.records,
+                codec=self.avro_compression,
+                sync_interval=self.avro_syncinterval,
+                metadata=self.avro_metadata,
+                validator=self.avro_validator,
+                sync_marker=self.avro_syncmarker,
+                codec_compression_level=self.avro_compressionlevel,
+            )
+            # reset written entries
+            self.itemcount = 0
+            # initialize new record cache
+            self.records = []
+            # reinit file
+            self.firstBlock = False
+
+    def _get_dict_from_item(self, item):
+        """
+        Returns the columns and values from the item
+        """
+        fields = dict(
+            self._get_serialized_fields(item, default_value="", include_empty=True)
+        )
         if self.avro_convertstr:
             for column in fields:
-                fields[column]=str(fields.column)
+                fields[column] = str(fields.column)
         return fields
+
 
 """
   Orc exporter
 """
-class OrcItemExporter(BaseItemExporter):
 
+
+class OrcItemExporter(BaseItemExporter):
     def __init__(self, file, dont_fail=False, **kwargs):
         """
-            Initialize exporter
+        Initialize exporter
         """
         super().__init__(**kwargs)
-        self.file=file # file name
-        self.itemcount=0 # initial item count
-        self.records=[] # record cache
+        self.file = file  # file name
+        self.itemcount = 0  # initial item count
+        self.records = []  # record cache
         self.logger = logging.getLogger()
-        if SUPPORTED_EXPORTERS['orc']:
+        if SUPPORTED_EXPORTERS["orc"]:
             self._configure(kwargs, dont_fail=dont_fail)
-
 
     def _configure(self, options, dont_fail=False):
         """Configure the exporter by poping options from the ``options`` dict.
         If dont_fail is set, it won't raise an exception on unexpected options
         (useful for using with keyword arguments in subclasses ``__init__`` methods)
         """
-        self.encoding = options.pop('encoding', None)
-        self.fields_to_export = options.pop('fields_to_export', None)
-        self.export_empty_fields = options.pop('export_empty_fields', False)
+        self.encoding = options.pop("encoding", None)
+        self.fields_to_export = options.pop("fields_to_export", None)
+        self.export_empty_fields = options.pop("export_empty_fields", False)
         # Read settings
-        self.orc_compression=options.pop('compression', pyorc.CompressionKind.ZLIB)
-        self.orc_compressionstrategy=options.pop('compressionstrategy',pyorc.CompressionStrategy.SPEED)
-        self.orc_blocksize=options.pop('blocksize',65536)
-        self.orc_batchsize=options.pop('batchsize',1024)
-        self.orc_stripesize=options.pop('stripesize',67108864)
-        self.orc_recordcache=options.pop('recordcache',10000)
-        self.orc_convertstr=options.pop('convertallstrings',False)
-        self.orc_schemastring=options.pop('schemastring','')
-        if self.orc_schemastring=='':
+        self.orc_compression = options.pop("compression", pyorc.CompressionKind.ZLIB)
+        self.orc_compressionstrategy = options.pop(
+            "compressionstrategy", pyorc.CompressionStrategy.SPEED
+        )
+        self.orc_blocksize = options.pop("blocksize", 65536)
+        self.orc_batchsize = options.pop("batchsize", 1024)
+        self.orc_stripesize = options.pop("stripesize", 67108864)
+        self.orc_recordcache = options.pop("recordcache", 10000)
+        self.orc_convertstr = options.pop("convertallstrings", False)
+        self.orc_schemastring = options.pop("schemastring", "")
+        if self.orc_schemastring == "":
             raise RuntimeError("No orc schema defined")
-        self.orc_bloomfiltercolumns=options.pop('bloomfiltercolumns',None)
-        self.orc_bloomfilterfpp=options.pop('bloomfilterfpp',0.05)
-        self.orc_converters=options.pop('converters',None)
-        self.orc_metadata=options.pop('metadata',None)
-
+        self.orc_bloomfiltercolumns = options.pop("bloomfiltercolumns", None)
+        self.orc_bloomfilterfpp = options.pop("bloomfilterfpp", 0.05)
+        self.orc_converters = options.pop("converters", None)
+        self.orc_metadata = options.pop("metadata", None)
 
     def export_item(self, item):
         """
-            Export a specific item to the file
+        Export a specific item to the file
         """
         # flush cache to orc file
-        if self.itemcount>self.orc_recordcache:
-                self._flush_table()
-        itemrecord=self._get_dict_from_item(item)
+        if self.itemcount > self.orc_recordcache:
+            self._flush_table()
+        itemrecord = self._get_dict_from_item(item)
         self.records.append(itemrecord)
-        self.itemcount+=1
+        self.itemcount += 1
         return item
-
 
     def start_exporting(self):
         """
-            Triggered when Scrapy starts exporting. Useful to configure headers etc.
+        Triggered when Scrapy starts exporting. Useful to configure headers etc.
         """
-        if not SUPPORTED_EXPORTERS['orc']:
-            raise RuntimeError("Error: Cannot export to orc. Cannot import pyorc. Have you installed it?")
-        self.orcwriter = pyorc.Writer(self.file, schema=self.orc_schemastring,batch_size=self.orc_batchsize,stripe_size=self.orc_stripesize,compression=self.orc_compression,compression_strategy=self.orc_compressionstrategy,compression_block_size=self.orc_blocksize,bloom_filter_columns=self.orc_bloomfiltercolumns,bloom_filter_fpp=self.orc_bloomfilterfpp,struct_repr=pyorc.StructRepr.DICT,converters=self.orc_converters)
-
-
-
-
+        if not SUPPORTED_EXPORTERS["orc"]:
+            raise RuntimeError(
+                "Error: Cannot export to orc. Cannot import pyorc. Have you installed it?"
+            )
+        self.orcwriter = pyorc.Writer(
+            self.file,
+            schema=self.orc_schemastring,
+            batch_size=self.orc_batchsize,
+            stripe_size=self.orc_stripesize,
+            compression=self.orc_compression,
+            compression_strategy=self.orc_compressionstrategy,
+            compression_block_size=self.orc_blocksize,
+            bloom_filter_columns=self.orc_bloomfiltercolumns,
+            bloom_filter_fpp=self.orc_bloomfilterfpp,
+            struct_repr=pyorc.StructRepr.DICT,
+            converters=self.orc_converters,
+        )
 
     def finish_exporting(self):
         """
-            Triggered when Scrapy ends exporting. Useful to shutdown threads, close files etc.
+        Triggered when Scrapy ends exporting. Useful to shutdown threads, close files etc.
         """
         # flush last items from records cache
         self._flush_table()
@@ -565,25 +601,26 @@ class OrcItemExporter(BaseItemExporter):
         self.file.close()
 
     def _flush_table(self):
-            """
-                Writes the current record cache to avro file
-            """
-            if len(self.records)>0:
-                # write cache to orc file
-                self.orcwriter.writerows(self.records)
-
-                # reset written entries
-                self.itemcount=0
-                # initialize new record cache
-                self.records=[]
-
-
-    def _get_dict_from_item(self,item):
         """
-            Returns the columns and values from the item
+        Writes the current record cache to avro file
         """
-        fields = dict(self._get_serialized_fields(item, default_value="",include_empty=True))
+        if len(self.records) > 0:
+            # write cache to orc file
+            self.orcwriter.writerows(self.records)
+
+            # reset written entries
+            self.itemcount = 0
+            # initialize new record cache
+            self.records = []
+
+    def _get_dict_from_item(self, item):
+        """
+        Returns the columns and values from the item
+        """
+        fields = dict(
+            self._get_serialized_fields(item, default_value="", include_empty=True)
+        )
         if self.orc_convertstr:
             for column in fields:
-                fields[column]=str(fields.column)
+                fields[column] = str(fields.column)
         return fields
