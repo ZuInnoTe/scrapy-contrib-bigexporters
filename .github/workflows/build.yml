@@ -17,12 +17,12 @@ jobs:
         run: | 
           pip install flit==3.7.1
           flit install
+      - name: Code formatting
+        run: black --check .  
       - name: Building library
         run: |
           export SOURCE_DATE_EPOCH=$(date +%s)
           flit build
-     - name: Code formatting
-        run: black --check .  
       - name: Code analysis
         run: prospector --profile .prospector.yaml --zero-exit > ./prospector.json
       - name: Run unit test
