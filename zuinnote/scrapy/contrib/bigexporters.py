@@ -257,12 +257,11 @@ except ImportError:
     SUPPORTED_EXPORTERS["orc"] = False
 
 
-"""
-  Parquet exporter
-"""
-
-
 class ParquetItemExporter(BaseItemExporter):
+    """
+    Parquet exporter
+    """
+
     def __init__(self, file, dont_fail=False, **kwargs):
         """
         Initialize exporter
@@ -399,12 +398,11 @@ class ParquetItemExporter(BaseItemExporter):
             self._reset_rowgroup()
 
 
-"""
-  Avro exporter
-"""
-
-
 class AvroItemExporter(BaseItemExporter):
+    """
+    Avro exporter
+    """
+
     def __init__(self, file, dont_fail=False, **kwargs):
         """
         Initialize exporter
@@ -512,12 +510,11 @@ class AvroItemExporter(BaseItemExporter):
         return fields
 
 
-"""
-  Orc exporter
-"""
-
-
 class OrcItemExporter(BaseItemExporter):
+    """
+    Orc exporter
+    """
+
     def __init__(self, file, dont_fail=False, **kwargs):
         """
         Initialize exporter
