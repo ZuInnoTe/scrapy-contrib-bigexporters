@@ -19,6 +19,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+
 import unittest
 import tempfile
 import datetime
@@ -185,7 +186,7 @@ class TestParquetItemExporter(unittest.TestCase):
         rcount = 0
         pf = ParquetFile(self.filename)
         df = pf.to_pandas()
-       
+
         for indx, record in df.iterrows():
             self.assertEqual(
                 "this is a test text",

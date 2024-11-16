@@ -20,7 +20,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-
 """
    Contains various formats for exporting data from the web crawling framework scrapy
 """
@@ -302,7 +301,9 @@ class ParquetItemExporter(BaseItemExporter):
         if self.itemcount > self.pq_items_rowgroup:
             self._flush_table()
         # Add the item to data frame
-        self.df = pd.concat([self.df if not self.df.empty else None, self._get_df_from_item(item)])
+        self.df = pd.concat(
+            [self.df if not self.df.empty else None, self._get_df_from_item(item)]
+        )
         self.itemcount += 1
         return item
 
