@@ -1,7 +1,7 @@
 name: build
 on: [push]
 jobs:
-  build-dev:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -31,6 +31,13 @@ jobs:
            coverage report
            coverage json
            coverage lcov
+      - name: Upload the build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifact
+          path: |
+             ./dist
+          retention-days: 2
       - name: Upload the build output
         uses: actions/upload-artifact@v4
         with:
