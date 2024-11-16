@@ -20,10 +20,10 @@ jobs:
         with:
            name: build-artifact
            path: ./dist
-      #- name: Publish package distributions to TestPyPI
-      #  uses: pypa/gh-action-pypi-publish@release/v1
-      #  with:
-      #     repository-url: https://test.pypi.org/legacy/
+      - name: Publish package distributions to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+           repository-url: https://test.pypi.org/legacy/
       - name: Cleanup attestations from Pypi test
         run: rm -rf dist/*.attestation
       # retrieve your distributions here
