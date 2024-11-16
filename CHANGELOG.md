@@ -6,8 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+
+## [0.5.0] - TBD
+* Added: Code formatting using [Black](https://black.readthedocs.io/en/stable/)
+* Added: Added [PyPi Trusted Publisher](https://docs.pypi.org/trusted-publishers/)
+* Changed: Minimal Python version: 3.11
+* Changed: Minimal dependency versions: Scrapy 2.11, fastavro 1.9, fastparquet 2024.02, pandas 2.2, pyorc 0.9
+
 ## [0.4.0] - 2022-06-25
-* Added: Migrate to Pandas concat instead of append due to depreciation [#4](https://github.com/ZuInnoTe/scrapy-contrib-bigexporters/issues/4)
+* Added: Migrate to Pandas concat instead of append due to deprecation [#4](https://github.com/ZuInnoTe/scrapy-contrib-bigexporters/issues/4)
 * Added: Add basic Github Actions workflow [#5](https://github.com/ZuInnoTe/scrapy-contrib-bigexporters/issues/5)
 * Added: Add support for pyproject.toml [#6](https://github.com/ZuInnoTe/scrapy-contrib-bigexporters/issues/6)
 * Added: Add a proper changelog based on https://keepachangelog.com/

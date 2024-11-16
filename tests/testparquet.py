@@ -185,6 +185,7 @@ class TestParquetItemExporter(unittest.TestCase):
         rcount = 0
         pf = ParquetFile(self.filename)
         df = pf.to_pandas()
+       
         for indx, record in df.iterrows():
             self.assertEqual(
                 "this is a test text",

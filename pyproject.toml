@@ -1,12 +1,12 @@
 [build-system]
-requires = ["flit_core >=3.6.0,<4"]
+requires = ["flit_core >=3.10.0,<4"]
 build-backend = "flit_core.buildapi"
 [project]
 name = "scrapy-contrib-bigexporters"
 authors = [
     {name = "Jörn Franke", email = "zuinnote@gmail.com"},
 ]
-version = "0.4.0"
+version = "0.5.0"
 description = "Scrapy exporter for Big Data formats"
 readme = "README.rst"
 classifiers = ["Development Status :: 5 - Production/Stable",
@@ -14,46 +14,44 @@ classifiers = ["Development Status :: 5 - Production/Stable",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.6",
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Software Development :: Libraries",
     "Operating System :: OS Independent"
 ]
 
-requires-python = ">=3.6"
+requires-python = ">=3.11"
 dependencies = [
-    "Scrapy>=2.4.0"
+    "Scrapy>=2.11.0"
 ]
 [project.optional-dependencies]
 avro = [
-    "fastavro>=1.1.0"
+    "fastavro>=1.9.0"
 ]
 parquet = [
-    "fastparquet>=0.4.1",
-    "pandas>=1.1.0"
+    "fastparquet>=2024.2.0",
+    "pandas>=2.2.0"
 ]
 orc = [
-    "pyorc>=0.4.0"
+    "pyorc>=0.9.0"
 ]
 test = [
-    "coverage>=6.3",
-    "tox>=3.25.0",
-    "pytest>=7.1.0"
+    "coverage>=7.6",
+    "tox>=4.23.0",
+    "pytest>=8.3.0"
 ]
 doc = [
-    "sphinx>=4.4.0"
+    "sphinx>=8.1.0"
 ]
 dev = [
-    "black>=22.3.0",
-    "prospector>=1.7.0",
-    "pylint>=2.11.1",
+    "black>=24.10.0",
+    "prospector>=1.13.0",
+    "pylint>=3.3.0",
     "bandit>=1.7.1",
-    "pycodestyle>=2.8.0",
-    "mccabe>=0.6.1",
-    "mypy>=0.950"
+    "pycodestyle>=2.12.0",
+    "mccabe>=0.7.0",
+    "mypy>=1.13.0"
 ]
 [project.urls]
 homepage = "https://codeberg.org/ZuInnoTe/scrapy-contrib-bigexporters"
@@ -72,7 +70,7 @@ legacy_tox_ini = """
 [tox]
 isolated_build = True
 [testenv]
-deps = pytest >= 7.0.0, <8
+deps = pytest >= 8.0.0, <9
 commands = pytest
 """
 
