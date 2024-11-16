@@ -1,5 +1,5 @@
 name: build-dev
 on: [push]
-build:
-    uses: ./.github/workflows/build-dev.yml
- 
+jobs: 
+    build:
+      uses: ./.github/workflows/build-dev.yml
