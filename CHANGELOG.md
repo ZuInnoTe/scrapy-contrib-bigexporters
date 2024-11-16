@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-## [0.5.0] - TBD
+## [0.5.0] - 2024-11-16
 * Added: Code formatting using [Black](https://black.readthedocs.io/en/stable/)
 * Added: Added [PyPi Trusted Publisher](https://docs.pypi.org/trusted-publishers/)
 * Changed: Minimal Python version: 3.11
