@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.5.0] - 2024-11-16
 * Added: Code formatting using [Black](https://black.readthedocs.io/en/stable/)
-* Added: Added [PyPi Trusted Publisher](https://docs.pypi.org/trusted-publishers/)
+* Added: Added [PyPi Trusted Publisher](https://docs.pypi.org/trusted-publishers/) with a dedicated Github action workflow (publish_pypi) in dedicated Github environment
 * Changed: Minimal Python version: 3.11
 * Changed: Minimal dependency versions: Scrapy 2.11, fastavro 1.9, fastparquet 2024.02, pandas 2.2, pyorc 0.9
 
