@@ -2,13 +2,12 @@ on:
   push:
     tags:        
       - '*'
-jobs:
   build:
-    uses: ./.github/workflows/build.yml  # use the callable tests job to run tests
+    uses: ./.github/workflows/build.yml
   pypi-publish:
     name: upload release to PyPI
-    needs: [build]
     runs-on: ubuntu-latest
+    needs: ["build"]
     # Specifying a GitHub environment is optional, but strongly encouraged
     environment: publish_pypi
     permissions:
