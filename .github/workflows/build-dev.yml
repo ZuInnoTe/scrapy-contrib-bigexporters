@@ -2,4 +2,4 @@ name: build-dev
 on: [push]
 jobs: 
     build:
-      uses: ./.github/workflows/build-dev.yml
+      uses: ./.github/workflows/build.yml
