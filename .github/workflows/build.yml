@@ -3,9 +3,12 @@ on: [workflow_call]
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: build
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
