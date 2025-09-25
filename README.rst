@@ -60,9 +60,9 @@ Use of the library is simple. Install it with your Scrapy project as described a
 
 See here for configuring the exporter in settings:
 
-* `Avro <https://github.com/ZuInnoTe/scrapy-contrib-bigexporters/blob/master/docs/avro.rst>`_
-* `Parquet <https://github.com/ZuInnoTe/scrapy-contrib-bigexporters/blob/master/docs/parquet.rst>`_
-* `ORC <https://github.com/ZuInnoTe/scrapy-contrib-bigexporters/blob/master/docs/orc.rst>`_
+* `Avro <https://codeberg.org/ZuInnoTe/scrapy-contrib-bigexporters/src/branch/main/docs/avro.rst`_
+* `Parquet <https://codeberg.org/ZuInnoTe/scrapy-contrib-bigexporters/src/branch/main/docs/parquet.rst>`_
+* `ORC <https://codeberg.org/ZuInnoTe/scrapy-contrib-bigexporters/src/branch/main/docs/orc.rst>`_
 
 Source
 ======
