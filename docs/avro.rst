@@ -181,4 +181,4 @@ If you want to use special types of compression then additional libraries may be
      - `lz4 <https://pypi.org/project/lz4/>`_
    * - 'xz'
      - XZ compression
-     - `backports.lzma <https://pypi.org/project/backports.lzma/>`_
+     - built-in (Python >=3.3) otherwise `backports.lzma <https://pypi.org/project/backports.lzma/>`_
