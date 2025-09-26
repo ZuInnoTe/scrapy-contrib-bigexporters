@@ -1,4 +1,4 @@
 fastparquet==2024.11.0
 pandas==2.2.3
-Scrapy==2.11.2
-scrapy-contrib-bigexporters==0.5.0
+Scrapy==2.13.3
+scrapy-contrib-bigexporters==0.6.0
