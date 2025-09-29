@@ -109,7 +109,7 @@ S3 file (e.g "s3://mybucket/data-quotes-2020-01-01T10-00-00.avro") with a schema
     }
 
 
-There are more storage backend, e.g. Google Cloud. See the documentation linked above.
+There are more storage backends, e.g. Google Cloud. See the documentation linked above.
 
 Finally, you can define in the FEEDS settings various options in 'item_export_kwargs' (and you need to at least define the AvroSchema)
 
