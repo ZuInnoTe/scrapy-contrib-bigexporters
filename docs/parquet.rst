@@ -4,7 +4,7 @@ Export
 
 We describe here how to use the Parquet exporter with Scrapy.
 
-`Parquet <https://parquet.apache.org/>`_ is a file format common in Big Data platforms for analysing in a structured way.
+`Parquet <https://parquet.apache.org/>`_ is a file format common in Big Data platforms for analysing data in a structured way.
 
 Example
 =======
