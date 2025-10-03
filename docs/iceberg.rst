@@ -17,6 +17,7 @@ General Guidelines
 Please look carefully at the options below.
 
 You need at least the library `pyiceberg <https://pypi.org/project/pyiceberg/>`_ and `pyarrow <https://pypi.org/project/pyarrow/>`_ to enable the Iceberg export. Example::
+  
   pip install pyiceberg[sql-sqlite,s3fs] pyarrow
 
 You may need additional libraries for supporting different catalogs, filesystems and compression (see below).
