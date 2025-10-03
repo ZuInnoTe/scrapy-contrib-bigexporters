@@ -1,5 +1,5 @@
 """
-Copyright (c) 2020 ZuInnoTe (Jörn Franke) <zuinnote@gmail.com>
+Copyright (c) 2020 ZuInnoTe (Jörn Franke) <oss@zuinnote.eu>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -221,7 +221,7 @@ see: https://docs.scrapy.org/en/latest/topics/exporters.html
 from scrapy.exporters import BaseItemExporter
 from scrapy.utils.project import get_project_settings
 
-
+import json
 import logging
 
 SUPPORTED_EXPORTERS = {}
@@ -254,6 +254,18 @@ try:
     logging.getLogger().info("Successfully imported pyorc. Export to orc supported.")
 except ImportError:
     SUPPORTED_EXPORTERS["orc"] = False
+
+try:
+    import pyarrow
+    import pyiceberg
+    from pyiceberg.catalog import load_catalog
+
+    SUPPORTED_EXPORTERS["iceberg"] = True
+    logging.getLogger().info(
+        "Successfully imported pyiceberg. Export to iceberg supported."
+    )
+except ImportError:
+    SUPPORTED_EXPORTERS["iceberg"] = False
 
 
 class ParquetItemExporter(BaseItemExporter):
@@ -622,3 +634,213 @@ class OrcItemExporter(BaseItemExporter):
             for column in fields:
                 fields[column] = str(fields.column)
         return fields
+
+
+class IcebergItemExporter(BaseItemExporter):
+    """
+    Iceberg exporter
+    """
+
+    def __init__(self, file, dont_fail=False, **kwargs):
+        """
+        Initialize exporter
+        """
+        super().__init__(**kwargs)
+        self.file = file  # file name
+        self.itemcount = 0  # initial item count
+        self.totalitemcount = 0  # total item count
+        self.columns = []  # initial columns to export
+        self.logger = logging.getLogger()
+        self._configure(kwargs, dont_fail=dont_fail)
+
+    def _configure(self, options, dont_fail=False):
+        """Configure the exporter by poping options from the ``options`` dict.
+        If dont_fail is set, it won't raise an exception on unexpected options
+        (useful for using with keyword arguments in subclasses ``__init__`` methods)
+        """
+        self.encoding = options.pop("encoding", None)
+        self.fields_to_export = options.pop("fields_to_export", None)
+        self.export_empty_fields = options.pop("export_empty_fields", False)
+        # Read settings
+        self.convertstr = options.pop("convertallstrings", False)
+        self.no_items_batch = options.pop("no_items_batch", 10000)
+        self.iceberg_catalog = options.pop("iceberg_catalog", {})
+        self.iceberg_namespace = options.pop("iceberg_namespace", {})
+        self.iceberg_table = options.pop("iceberg_table", {})
+        # Validate settings
+        if self.no_items_batch < 1:
+            raise RuntimeError(
+                "Iceberg: Number of items in batch processing cannot be smaller than 1"
+            )
+        # An iceberg configuration is complex and is not processed as this time. Thus, we do only a simple validation.
+        if len(self.iceberg_catalog) == 0:
+            logging.getLogger().warn(
+                "Empty Iceberg catalog specified. Assuming that it is specified outside (e.g. using environment variables)"
+            )
+            self.iceberg_catalog_configuration = None
+        else:
+            # Read only the first item of the dict. We support only to write to one catalog at a time.
+            self.iceberg_catalog_configuration = next(
+                iter(self.iceberg_catalog.items())
+            )
+        # Iceberg namespace configuration
+        if len(self.iceberg_namespace) == 0:
+            raise RuntimeError(
+                'Iceberg: No namespace configuration "iceberg_namespace" specified'
+            )
+        if self.iceberg_namespace.get("name", "") == "":
+            raise RuntimeError(
+                'Iceberg: No namespace name configuration "iceberg_namespace" specified'
+            )
+        else:
+            self.iceberg_namespace_name = self.iceberg_namespace.get("name")
+        self.iceberg_namespace_create_if_not_exists = self.iceberg_namespace.get(
+            "create_if_not_exists", False
+        )
+        self.iceberg_namespace_properties = self.iceberg_namespace.get("properties", {})
+        # Iceberg table configuration
+        if len(self.iceberg_table) == 0:
+            raise RuntimeError(
+                'Iceberg: No table configuration "iceberg_table" specified'
+            )
+        if self.iceberg_table.get("name", "") == "":
+            raise RuntimeError(
+                'Iceberg: No table name configuration "iceberg_table" specified'
+            )
+        else:
+            self.iceberg_table_name = self.iceberg_table.get("name")
+        self.iceberg_table_create_if_not_exists = self.iceberg_table.get(
+            "create_if_not_exists", False
+        )
+        self.iceberg_table_properties = self.iceberg_table.get("properties", {})
+
+    def export_item(self, item):
+        """
+        Export a specific item to the file
+        """
+        # Initialize writer
+        if len(self.columns) == 0:
+            self._init_table(item)
+        # Create a new row group to write
+        if self.itemcount > self.no_items_batch:
+            self._flush_table()
+        # Add the item to data frame
+        self.df = pd.concat(
+            [self.df if not self.df.empty else None, self._get_df_from_item(item)]
+        )
+        self.itemcount += 1
+        return item
+
+    def start_exporting(self):
+        """
+        Triggered when Scrapy starts exporting. Useful to configure headers etc.
+        """
+        if not SUPPORTED_EXPORTERS["iceberg"]:
+            raise RuntimeError(
+                "Error: Cannot export to iceberg. Cannot import pyiceberg. Have you installed it?"
+            )
+        # Initialize catalog
+        if self.iceberg_catalog_configuration == None:
+            self.pyiceberg_catalog = load_catalog()
+        else:
+            self.pyiceberg_catalog = load_catalog(
+                self.iceberg_catalog_configuration[0],
+                **self.iceberg_catalog_configuration[1],
+            )
+        # Initialize namespace
+        if self.iceberg_namespace_create_if_not_exists:
+            self.pyiceberg_catalog.create_namespace_if_not_exists(
+                self.iceberg_namespace_name, self.iceberg_namespace_properties
+            )
+        # Initialize table
+        self.pyiceberg_table = None
+
+    def finish_exporting(self):
+        """
+        Triggered when Scrapy ends exporting. Useful to shutdown threads, close files etc.
+        """
+        # write possible remaining data
+        self._flush_table()
+        # write json with number of items scraped
+        self.file.write(
+            bytearray(json.dumps({"noitems": self.totalitemcount}), "utf-8")
+        )
+        # close any open file
+        self.file.close()
+
+    def _get_columns(self, item):
+        """
+        Determines the columns of an item
+        """
+        if isinstance(item, dict):
+            # for dicts try using fields of the first item
+            self.columns = list(item.keys())
+        else:
+            # use fields declared in Item
+            self.columns = list(item.fields.keys())
+
+    def _init_table(self, item):
+        """
+        Initializes table for parquet file
+        """
+        # initialize columns
+        self._get_columns(item)
+        self._reset_rowgroup()
+
+    def _get_df_from_item(self, item):
+        """
+        Get the dataframe from item
+        """
+        row = {}
+        fields = dict(
+            self._get_serialized_fields(item, default_value="", include_empty=True)
+        )
+        for column in self.columns:
+            if self.convertstr == True:
+                row[column] = str(fields.get(column, None))
+            else:
+                value = fields.get(column, None)
+                row[column] = value
+        if self.convertstr == True:
+            return pd.DataFrame(row, index=[0]).astype(str)
+        return pd.DataFrame.from_dict([row])
+
+    def _reset_rowgroup(self):
+        """
+        Reset dataframe for writing
+        """
+        if self.convertstr == False:  # auto determine schema
+            # initialize df
+            self.df = pd.DataFrame(columns=self.columns)
+        else:
+            # initialize df with zero strings to derive correct schema
+            self.df = pd.DataFrame(columns=self.columns).astype(str)
+
+    def _flush_table(self):
+        """
+        Writes the current row group to parquet file
+        """
+        if len(self.df.index) > 0:
+            # reset written entries
+            self.totalitemcount += self.itemcount
+            self.itemcount = 0
+            # Convert to arrow
+            arrow_table = pyarrow.Table.from_pandas(self.df)
+            # check if table is loaded
+            if self.pyiceberg_table is None:
+                if self.iceberg_table_create_if_not_exists:
+                    self.pyiceberg_table = (
+                        self.pyiceberg_catalog.create_table_if_not_exists(
+                            self.iceberg_table_name,
+                            schema=arrow_table.schema,
+                            properties=self.iceberg_table_properties,
+                        )
+                    )
+                else:
+                    self.iceberg_table_properties = self.pyiceberg_catalog.load_table(
+                        self.iceberg_table_name
+                    )
+            # append data
+            self.pyiceberg_table.append(arrow_table)
+            # initialize new data frame for new row group
+            self._reset_rowgroup()

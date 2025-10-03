@@ -3,6 +3,7 @@
 *.parquet
 *.parq
 *.orc
+warehouse/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

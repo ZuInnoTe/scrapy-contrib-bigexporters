@@ -14,17 +14,18 @@ The following big data formats are supported:
 * Parquet: https://parquet.apache.org/
 * Orc: https://orc.apache.org
 
+The library is published using `pypi trusted publishers <https://docs.pypi.org/trusted-publishers/>`_
 
 Requirements
 ============
 
-* Python 3.11+
-* Scrapy 2.11+
+* Python 3.12+
+* Scrapy 2.13+
 * Works on Linux, Windows, macOS, BSD
-* Parquet export requires fastparquet 2024.02+
-* Avro export requires fastavro 1.9+
-* ORC export requires pyorc 0.9+
-
+* Parquet export requires fastparquet 2024.1+
+* Avro export requires fastavro 1.12+
+* ORC export requires pyorc 0.10+
+* Iceberg export requires pyiceberg 0.10+
 
 Install
 =======
@@ -42,16 +43,29 @@ Depending on which format you want to use you need to install one or more of the
 Avro::
 
     pip install fastavro
+    
+Avro is a file format.
+Iceberg::
+
+    pip install pyiceberg pyarrow
+
+Iceberg is an open table format.
+
+Note: Most likely you will need to add specific dependencies so that Iceberg works for you. See `pyiceberg installation <https://py.iceberg.apache.org/#installation>`_
 
 ORC::
 
     pip install pyorc
 
+ORC is a file format.
+
 Parquet::
 
     pip install fastparquet
 
-Additional libraries may be needed for specific compression algorithms. See "Use".
+Parquet is a file format.
+
+Additional libraries may be needed for specific compression algorithms. The open table format may require additional libraries also to use different filesystems, catalogs and compression formats. See "Use".
 
 Use
 ====
@@ -60,7 +74,8 @@ Use of the library is simple. Install it with your Scrapy project as described a
 
 See here for configuring the exporter in settings:
 
-* `Avro <https://codeberg.org/ZuInnoTe/scrapy-contrib-bigexporters/src/branch/main/docs/avro.rst`_
+* `Avro <https://codeberg.org/ZuInnoTe/scrapy-contrib-bigexporters/src/branch/main/docs/avro.rst>`_
+* `Iceberg <https://codeberg.org/ZuInnoTe/scrapy-contrib-bigexporters/src/branch/main/docs/iceberg.rst>`_
 * `Parquet <https://codeberg.org/ZuInnoTe/scrapy-contrib-bigexporters/src/branch/main/docs/parquet.rst>`_
 * `ORC <https://codeberg.org/ZuInnoTe/scrapy-contrib-bigexporters/src/branch/main/docs/orc.rst>`_
 
