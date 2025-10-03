@@ -19,7 +19,6 @@ Please look carefully at the options below.
 You need at least the library `pyiceberg <https://pypi.org/project/pyiceberg/>`_ and `pyarrow <https://pypi.org/project/pyarrow/>`_ to enable the Iceberg export. Example::
   pip install pyiceberg[sql-sqlite,s3fs] pyarrow
 
-
 You may need additional libraries for supporting different catalogs, filesystems and compression (see below).
 
 Note: Iceberg supports connecting multiple different technologies (e.g. databases, object store, file systems etc.) as it is an open table format. Thus, we do not use the export file provided by Scrapy to write the data, but this is configured directly in iceberg. 
@@ -86,9 +85,13 @@ Example s3 file, e.g. s3://mybucket/result-quotes-2020-01-01T10-00-00.json::
              'no_items_batch': 10000,
              'iceberg_catalog': {
                'default': {
-                    'type': 'sql',
-                    'uri': 'sqlite:///./warehouse/pyiceberg_catalog.db',
-                    'warehouse': 'file:///./warehouse'
+                    'type': 'rest',
+                    'uri': 'http://rest-catalog/ws/',
+                    'credential': 'username:password',
+                    'warehouse': 's3://databucket/warehouse/',
+                    'client.access-key-id': '<ACCESS_KEY_ID>',
+                    'client.secret-access-key': '<SECRET_ACCESS_KEY>',
+                    'client.region': '<REGION_NAME>'
                }
              },
               'iceberg_namespace': {
@@ -99,6 +102,7 @@ Example s3 file, e.g. s3://mybucket/result-quotes-2020-01-01T10-00-00.json::
               'iceberg_table': {
                     'name': 'mynamespace.scraping_data',
                     'create_if_not_exists': True,
+                    'location': 's3://databucket/warehouse/scraping_data'
                     'properties': {
                         'write.parquet.compression-codec': 'zstd',
                         'write.parquet.compression-level': 3
@@ -110,7 +114,12 @@ Example s3 file, e.g. s3://mybucket/result-quotes-2020-01-01T10-00-00.json::
 There are more storage backends, e.g. Google Cloud. See the documentation linked above. Note: The storage backends supported by Scrapy may differ from the ones supported by Iceberg.
 
 The file you specify as filename only stores how many items have been scraped. 
-The scrapped data will be stored in the Iceberg table within the Iceberg catalog that you specified. This Iceberg catalog and table can be on S3, but can also be somewhere completely different.
+
+The Iceberg configuration (iceberg_*) allows to configure a wide range of catalogs and file systems/object stores. You need to check the Iceberg documentation to assess which one is the correct one for your environment and the most secure (generally you should avoid static credentials, such as AWS_SECRET_KEY and AWS_ACCESS_KEY, as they may leak and malicious people can fetch your data. Prefer short-living tokens).
+
+The scrapped data will be stored in the Iceberg table (if you configure in the table properties a `location <https://iceberg.apache.org/spec/#table-metadata-fields>`_) within the Iceberg catalog that you specified (see `pyiceberg catalog configuration <https://py.iceberg.apache.org/configuration/#catalogs>`_). This Iceberg catalog and table can be on S3, but can also be somewhere completely different.
+
+In this example, we specify an Iceberg rest catalog and the data is stored in an S3-compatible datastore.
 
 
 Finally, you can define in the FEEDS settings various options in 'item_export_kwargs'
@@ -138,9 +147,10 @@ Finally, you can define in the FEEDS settings various options in 'item_export_kw
      - 'iceberg_table': {
                     'name': 'default.scraping_data',
                     'create_if_not_exists': True,
+                    'location': None,
                     'properties': {}
                 }
-     - Configuration of the table. You can configure the table name in the catalog ('name') and the option 'create_if_not_exists', which if set to True, will create the table in the catalog if it does not exist. Otherwise it will reuse the existing table. Additionally you can specify the `table properties <https://py.iceberg.apache.org/configuration/#tables>`_ in case the table is created using the option 'properties', which expects a Python dictionary. Note: If you require to specify a partition_spec or sort_order then we recommend to create the table outside of your Python script directly in the catalog once beforehand.
+     - Configuration of the table. You can configure the table name, a location (optional, you can leave it to None and then the defaults of your catalog apply) in the catalog ('name') and the option 'create_if_not_exists', which if set to True, will create the table in the catalog if it does not exist. Otherwise it will reuse the existing table. Additionally you can specify the `table properties <https://py.iceberg.apache.org/configuration/#tables>`_ in case the table is created using the option 'properties', which expects a Python dictionary. Note: If you require to specify a partition_spec or sort_order then we recommend to create the table outside of your Python script directly in the catalog once beforehand.
    * - 'iceberg_namespace'
      - 'iceberg_namespace': {
                     'name': 'default',

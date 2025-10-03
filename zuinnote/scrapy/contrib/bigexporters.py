@@ -712,6 +712,7 @@ class IcebergItemExporter(BaseItemExporter):
         self.iceberg_table_create_if_not_exists = self.iceberg_table.get(
             "create_if_not_exists", False
         )
+        self.iceberg_table_location = self.iceberg_table.get("location", None)
         self.iceberg_table_properties = self.iceberg_table.get("properties", {})
 
     def export_item(self, item):
@@ -833,6 +834,7 @@ class IcebergItemExporter(BaseItemExporter):
                         self.pyiceberg_catalog.create_table_if_not_exists(
                             self.iceberg_table_name,
                             schema=arrow_table.schema,
+                            location=self.iceberg_table_location,
                             properties=self.iceberg_table_properties,
                         )
                     )

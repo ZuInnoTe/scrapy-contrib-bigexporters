@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [0.6.1] - 2025-10-03
+* Added: Provide possibility to specify a location for an Iceberg table (only relevant if a scraper creates the table and it is not already given)
+
 ## [0.6.0] - 2025-10-03
 * Added: Support for [Apache Iceberg](https://iceberg.apache.org/). Note: Iceberg is an open table format and not a file format. It has a lot of different configuration options. Thus, it works a bit differently under Scrapy
 * Changed: Minimal Python version: 3.12
