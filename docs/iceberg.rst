@@ -16,7 +16,11 @@ General Guidelines
 
 Please look carefully at the options below.
 
-You need at least the library `pyiceberg <https://pypi.org/project/pyiceberg/>`_ and `pyarrow <https://pypi.org/project/pyarrow/>`_ to enable the Iceberg export. You may need additional libraries for supporting different catalogs, filesystems and compression (see below).
+You need at least the library `pyiceberg <https://pypi.org/project/pyiceberg/>`_ and `pyarrow <https://pypi.org/project/pyarrow/>`_ to enable the Iceberg export. Example::
+  pip install pyiceberg[sql-sqlite,s3fs] pyarrow
+
+
+You may need additional libraries for supporting different catalogs, filesystems and compression (see below).
 
 Note: Iceberg supports connecting multiple different technologies (e.g. databases, object store, file systems etc.) as it is an open table format. Thus, we do not use the export file provided by Scrapy to write the data, but this is configured directly in iceberg. 
 We only write in the final file a JSON object indicating the number of items written. The real data is written using pyiceberg to whatever catalog/namespace/table you configured.
