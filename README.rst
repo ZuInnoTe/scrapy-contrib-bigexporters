@@ -11,6 +11,7 @@ scrapy-contrib-bigexporters provides additional exporters for the web crawling a
 The following big data formats are supported:
 
 * Avro: https://avro.apache.org/
+* Iceberg: https://iceberg.apache.org/
 * Parquet: https://parquet.apache.org/
 * Orc: https://orc.apache.org
 
