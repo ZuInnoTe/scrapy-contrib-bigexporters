@@ -42,6 +42,7 @@ orc = [
     "pyorc>=0.10.0"
 ]
 test = [
+    "pyiceberg[sql-sqlite]>=0.10",
     "coverage>=7.10",
     "tox>=4.30.0",
     "pytest>=8.4.0"
