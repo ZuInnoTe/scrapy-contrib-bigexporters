@@ -5,27 +5,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.6.0] - 2025-10-03
 * Added: Support for [Apache Iceberg](https://iceberg.apache.org/). Note: Iceberg is an open table format and not a file format. It has a lot of different configuration options. Thus, it works a bit differently under Scrapy
 * Changed: Minimal Python version: 3.12
 * Changed: Minimal dependency versions: Scrapy: 2.13.3, fastavro 1.12.0, pyiceberg 0.10.0, fastparquet 2024.11.0, pyorc 0.10.0
-* Changed: Update minimal build dependencies: coverage >= 7.10, tox >=4.30.0, pytest >= 8.4.0, sphinx >= 8.2.0, black >= 25.9.0, prospector >= 1.17.0, pylint >=3.3.0, bandit>= 1.8.0, pycodestyle >= 2.14.0, mccabe => 0.7.0
-
-
-"coverage>=7.10",
-    "tox>=4.30.0",
-    "pytest>=8.4.0"
-]
-doc = [
-    "sphinx>=8.2.0"
-]
-dev = [
-    "black>=25.9.0",
-    "prospector>=1.17.0",
-    "pylint>=3.3.0",
-    "bandit>=1.8.0",
-    "pycodestyle>=2.14.0",
-    "mccabe>=0.7.0",
-    "mypy>=1.18.0"
+* Changed: Update minimal build dependencies: coverage >= 7.10, tox >=4.30.0, pytest >= 8.4.0, sphinx >= 8.2.0, black >= 25.9.0, prospector >= 1.17.0, pylint >=3.3.0, bandit>= 1.8.0, pycodestyle 
 
 ## [0.5.0] - 2024-11-16
 * Added: Code formatting using [Black](https://black.readthedocs.io/en/stable/)
