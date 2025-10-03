@@ -3,6 +3,7 @@
 *.parquet
 *.parq
 *.orc
+result.json
 warehouse/
 
 # Byte-compiled / optimized / DLL files
