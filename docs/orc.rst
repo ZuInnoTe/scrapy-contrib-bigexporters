@@ -156,4 +156,4 @@ If you want to use special types of compression then additional libraries may be
      - `lz4 <https://pypi.org/project/lz4/>`_
    * - ZSTD = 5
      - Zstandard compression
-     - `zstandard <https://pypi.org/project/zstandard/>`_
+     - `zstandard <https://pypi.org/project/zstandard/>`_ (Python >= 3.14: built-in)

@@ -132,7 +132,7 @@ If you want to use special types of compression then additional libraries may be
      - `brotli <https://pypi.org/project/brotli/>`_
    * - 'ZSTD'
      - Zstandard compression
-     - `zstandard <https://pypi.org/project/zstandard/>`_
+     - `zstandard <https://pypi.org/project/zstandard/>`_ (Python >= 3.14: built-in)
    * - 'LZ4'
      - LZ4 compression
      - `lz4 <https://pypi.org/project/lz4/>`_
