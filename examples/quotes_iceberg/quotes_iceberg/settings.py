@@ -27,6 +27,7 @@ FEEDS = {
         "item_export_kwargs": {
             "hasnulls": True,  # can contain nulls
             "convertallstrings": False,  # convert all values to string. recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
+            "no_items_batch": 10000,  # how many items should be included in each append call to an Iceberg table
             "iceberg_catalog": {
                 "default": {
                     "type": "sql",
