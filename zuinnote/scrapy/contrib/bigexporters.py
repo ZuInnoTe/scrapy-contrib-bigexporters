@@ -21,200 +21,7 @@ SOFTWARE.
 """
 
 """
-   Contains various formats for exporting data from the web crawling framework scrapy
-"""
-
-
-"""
-Parquet exporter
-Write export as parquet file (based on fastparquet - you need to add the latest version as a dependency)
-Custom parquet feed exporter
-FEED_EXPORTERS={'parquet': 'zuinnote.scrapy.contrib.bigexporters.ParquetItemExporter'} # register additional format
-Example local file, e.g. data-quotes-2020-01-01T10-00-00.parquet
-FEEDS = {
-'data-%(name)s-%(time)s.parquet': {
-        'format': 'parquet',
-        'encoding': 'utf8',
-        'store_empty': False,
-        'item_export_kwargs': {
-           'compression': 'GZIP', # compression to be used in Parquet, UNCOMPRESSED, GZIP, SNAPPY (package: python-snappy), LZO (package: lzo), BROTLI (package: brotli), LZ4 (package: lz4), ZSTD (package: zstandard) note: compression may require additional libraries
-           'times': 'int64', # type for times int64 or int96, spark is int96 only
-           'hasnulls': True,# can contain nulls
-           'convertallstrings': False,# convert all values to string. recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
-           'writeindex': False, # write index as extra column
-           'objectencoding': 'infer', # schema of data
-           'rowgroupoffset': 50000000, # offset row groups
-           'items_rowgroup': 10000  # how many items per rowgroup, should be several thousands, e.g. between 5,000 and 30,000. The more rows the higher the memory consumption and the better the compression on the final parquet file
-        },
-    }
-}
-
-Example s3 file, e.g. s3://mybucket/data-quotes-2020-01-01T10-00-00.parquet
-FEEDS = {
-'s3://aws_key:aws_secret@mybucket/data-%(name)s-%(time)s.parquet': {
-        'format': 'parquet',
-        'encoding': 'utf8',
-        'store_empty': False,
-        'item_export_kwargs': {
-           'compression': 'GZIP', # compression to be used in Parquet, UNCOMPRESSED, GZIP, SNAPPY (package: python-snappy), LZO (package: lzo), BROTLI (package: brotli), LZ4 (package: lz4), ZSTD (package: zstandard) note: compression may require additional libraries
-           'times': 'int64', # type for times int64 or int96, spark is int96 only
-           'hasnulls': True,# can contain nulls
-           'convertallstrings': False,# convert all values to string. recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
-           'writeindex': False, # write index as extra column
-           'objectencoding': 'infer', # schema of data
-           'rowgroupoffset': 50000000, # offset row groups
-           'items_rowgroup': 10000  # how many items per rowgroup, should be several thousands, e.g. between 5,000 and 30,000. The more rows the higher the memory consumption and the better the compression on the final parquet file
-        },
-    }
-}
-
-see: https://docs.scrapy.org/en/latest/topics/exporters.html
-"""
-
-"""
-Avro exporter
-Write export as avro file (based on fastavro - you need to add the latest version as a dependency)
-
-Custom avro feed exporter
-FEED_EXPORTERS={'avro': 'zuinnote.scrapy.contrib.bigexporters.AvroItemExporter'} # register additional format
-Possible options in settings.py and their default settings using FEEDS
-Example local file, e.g. data-quotes-2020-01-01T10-00-00.avro
-FEEDS = {
-'data-%(name)s-%(time)s.avro': {
-        'format': 'avro',
-        'encoding': 'utf8',
-        'store_empty': False,
-        'item_export_kwargs': {
-           'compression': 'deflate',# compression to be used in Avro, null, deflate, bzip2, snappy (package: python-snappy), zstandard(package: zstandard), lz4 (package: lz4) , xz (packahe: backports.lzma) note: compression may require additional libraries
-           'compressionlevel': None, # codec specific compression level, can be an integer if supported by codec
-           'metadata': None,# metadata (dict)
-           'syncinterval': 16000, # sync interval, how many bytes written per block, should be several thousands, the higher the better is the compression, but seek time may increase
-           'recordcache': 10000, # how many records should be written at once, the higher the better the compression, but the more memory is needed
-           'syncmarker': None, # bytes, if None then a random byte string is used
-           'convertallstrings': False,# convert all values to string. recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
-           'validator': None, # use fast avro validator when writing, can be None, True (fastavro.validation.validate or a function)
-           'avroschema': {
-               'doc': 'Some quotes',
-               'name': 'quotes',
-               'type': 'record',
-               'fields': [
-                   {'name': 'text', 'type': 'string'},
-                   {'name': 'author', 'type': {
-                       'type':'array',
-                       'items':'string',
-                       'default':[]
-                       }
-                   },
-                   {'name': 'tags', 'type': {
-                       'type':'array',
-                       'items':'string',
-                       'default':[]
-                       }
-                   },
-               ]
-           } # Mandatory to specify schema. Please name your fields exactly like you name them in your items. Please make sure that the item has always values filled, otherwise you may see errors during scraping. See also https://fastavro.readthedocs.io/en/latest/writer.html
-        },
-    }
-}
-
-Example s3 file, e.g. s3://mybucket/data-quotes-2020-01-01T10-00-00.avro
-FEEDS = {
-'s3://aws_key:aws_secret@mybucket/data-%(name)s-%(time)s.avro': {
-        'format': 'avro',
-        'encoding': 'utf8',
-        'store_empty': False,
-        'item_export_kwargs': {
-           'compression': 'deflate',# compression to be used in Avro, null, deflate, bzip2, snappy (package: python-snappy), zstandard(package: zstandard), lz4 (package: lz4) , xz (packahe: backports.lzma) note: compression may require additional libraries
-           'compressionlevel': None, # codec specific compression level, can be an integer if supported by codec
-           'metadata': None,# metadata (dict)
-           'syncinterval': 16000, # sync interval, how many bytes written per block, should be several thousands, the higher the better is the compression, but seek time may increase
-           'recordcache': 10000, # how many records should be written at once, the higher the better the compression, but the more memory is needed
-           'syncmarker': None, # bytes, if None then a random byte string is used
-           'convertallstrings': False,# convert all values to string. recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
-           'validator': None, # use fast avro validator when writing, can be None, True (fastavro.validation.validate or a function)
-           'avroschema': {
-               'doc': 'Some quotes',
-               'name': 'quotes',
-               'type': 'record',
-               'fields': [
-                   {'name': 'text', 'type': 'string'},
-                   {'name': 'author', 'type': {
-                       'type':'array',
-                       'items':'string',
-                       'default':[]
-                       }
-                   },
-                   {'name': 'tags', 'type': {
-                       'type':'array',
-                       'items':'string',
-                       'default':[]
-                       }
-                   },
-               ]
-           } # Mandatory to specify schema. Please name your fields exactly like you name them in your items. Please make sure that the item has always values filled, otherwise you may see errors during scraping. See also https://fastavro.readthedocs.io/en/latest/writer.html
-        },
-    }
-}
-
-see: https://docs.scrapy.org/en/latest/topics/exporters.html
-"""
-
-
-"""
-Orc exporter
-Write export as orc file (based on pyorc - you need to add the latest version as a dependency)
-Possible options in settings.py and their default settings
-Custom orc feed exporter
-FEED_EXPORTERS={'orc': 'zuinnote.scrapy.contrib.bigexporters.OrcItemExporter'} # register additional format
-Example local file, e.g. data-quotes-2020-01-01T10-00-00.orc
-
-FEEDS = {
-'data-%(name)s-%(time)s.orc': {
-        'format': 'orc',
-        'encoding': 'utf8',
-        'store_empty': False,
-        'item_export_kwargs': {
-           'compression': pyorc.CompressionKind.ZLIB, # compression to be used in orc, see pyorc.CompressionKind (None = 0, ZLIB = 1, SNAPPY = 2 (package: python-snappy), LZO = 3 (package: lzo), LZ4 = 4 (package: lz4), ZSTD = 5 (package: zstandard), note: compression may require additional libraries
-           'compressionstrategy': pyorc.CompressionStrategy.SPEED, # compression to be used in orc, see pyorc.CompressionStrategy (Speed = 0, COMPRESSION = 1)
-           'blocksize': 65536,# block size of an ORC bloc
-           'batchsize': 1024, # batch size
-           'stripesize': 67108864, # stripe size
-           'recordcache': 10000, # how many records should be written at once, the higher the better the compression, but the more memory is needed, potentially also bloom filter performance can be increased with higher values
-           'schemastring': "struct<text:string,author:list<string>,tags:list<string>>", # Mandatory to specify schema. Please name your fields exactly like you name them in your items. See also https://pyorc.readthedocs.io/en/latest/api.html#pyorc.Struct
-           'convertallstrings': False,# convert all values to string. recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
-           'bloomfiltercolumns': None, # Define for which columns a bloom filter should be used (list). Bloom filters are very useful for performing access to columns containing few discrete values
-           'bloomfilterfpp': 0.05, # False positives probability for bloom filters
-           'converters': None, # Define converters, can be a dictionary, where the keys are pyorc.TypeKind and the values are subclasses of ORCConverter
-           'metadata': None # metadata to be added to ORC file value is bytes (e.g. (extra="info".encode() will lead to {'extra': b'info'}))
-        },
-    }
-}
-
-Example S3 file, e.g. s3://mybucket/data-quotes-2020-01-01T10-00-00.orc
-
-FEEDS = {
-'s3://aws_key:aws_secret@mybucket/data-%(name)s-%(time)s.orc': {
-        'format': 'orc',
-        'encoding': 'utf8',
-        'store_empty': False,
-        'item_export_kwargs': {
-           'compression': pyorc.CompressionKind.ZLIB, # compression to be used in orc, see pyorc.CompressionKind (None = 0, ZLIB = 1, SNAPPY = 2 (package: python-snappy), LZO = 3 (package: lzo), LZ4 = 4 (package: lz4), ZSTD = 5 (package: zstandard), note: compression may require additional libraries
-           'compressionstrategy': pyorc.CompressionStrategy.SPEED, # compression to be used in orc, see pyorc.CompressionStrategy (Speed = 0, COMPRESSION = 1)
-           'blocksize': 65536,# block size of an ORC bloc
-           'batchsize': 1024, # batch size
-           'stripesize': 67108864, # stripe size
-           'recordcache': 10000, # how many records should be written at once, the higher the better the compression, but the more memory is needed, potentially also bloom filter performance can be increased with higher values
-           'schemastring': "struct<text:string,author:list<string>,tags:list<string>>", # Mandatory to specify schema. Please name your fields exactly like you name them in your items. See also https://pyorc.readthedocs.io/en/latest/api.html#pyorc.Struct
-           'convertallstrings': False,# convert all values to string. recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
-           'bloomfiltercolumns': None, # Define for which columns a bloom filter should be used (list). Bloom filters are very useful for performing access to columns containing few discrete values
-           'bloomfilterfpp': 0.05, # False positives probability for bloom filters
-           'converters': None, # Define converters, can be a dictionary, where the keys are pyorc.TypeKind and the values are subclasses of ORCConverter
-           'metadata': None # metadata to be added to ORC file value is bytes (e.g. (extra="info".encode() will lead to {'extra': b'info'}))
-        },
-    }
-}
-
-
+Contains various formats for exporting data from the web crawling framework scrapy
 see: https://docs.scrapy.org/en/latest/topics/exporters.html
 """
 
@@ -266,6 +73,12 @@ try:
     )
 except ImportError:
     SUPPORTED_EXPORTERS["iceberg"] = False
+
+
+"""
+Parquet exporter
+Write export as parquet file
+"""
 
 
 class ParquetItemExporter(BaseItemExporter):
@@ -411,6 +224,12 @@ class ParquetItemExporter(BaseItemExporter):
             self._reset_rowgroup()
 
 
+"""
+Avro exporter
+Write export as avro file
+"""
+
+
 class AvroItemExporter(BaseItemExporter):
     """
     Avro exporter
@@ -521,6 +340,12 @@ class AvroItemExporter(BaseItemExporter):
             for column in fields:
                 fields[column] = str(fields.column)
         return fields
+
+
+"""
+Orc exporter
+Write export as orc file
+"""
 
 
 class OrcItemExporter(BaseItemExporter):
@@ -634,6 +459,12 @@ class OrcItemExporter(BaseItemExporter):
             for column in fields:
                 fields[column] = str(fields.column)
         return fields
+
+
+"""
+Iceberg exporter
+Write export as open table format Iceberg
+"""
 
 
 class IcebergItemExporter(BaseItemExporter):
@@ -782,7 +613,7 @@ class IcebergItemExporter(BaseItemExporter):
 
     def _init_table(self, item):
         """
-        Initializes table for parquet file
+        Initializes table
         """
         # initialize columns
         self._get_columns(item)
@@ -819,7 +650,7 @@ class IcebergItemExporter(BaseItemExporter):
 
     def _flush_table(self):
         """
-        Writes the current row group to parquet file
+        Append current batch to Iceberg table
         """
         if len(self.df.index) > 0:
             # reset written entries
