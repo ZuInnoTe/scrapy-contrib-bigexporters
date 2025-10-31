@@ -6,7 +6,7 @@ name = "scrapy-contrib-bigexporters"
 authors = [
     {name = "Jörn Franke", email = "oss@zuinnote.eu"},
 ]
-version = "0.6.1"
+version = "1.0.0"
 description = "Scrapy exporter for Big Data formats"
 readme = "README.rst"
 classifiers = ["Development Status :: 5 - Production/Stable",
