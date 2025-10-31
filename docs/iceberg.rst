@@ -106,7 +106,8 @@ Example s3 file, e.g. s3://mybucket/result-quotes-2020-01-01T10-00-00.json::
                     'location': 's3://databucket/warehouse/scraping_data'
                     'properties': {
                         'write.parquet.compression-codec': 'zstd',
-                        'write.parquet.compression-level': 3
+                        'write.parquet.compression-level': 3,
+                        'write.object-storage.enabled': True
                     }
               }
           },
