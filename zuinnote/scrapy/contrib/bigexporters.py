@@ -114,9 +114,10 @@ class ParquetItemExporter(BaseItemExporter):
         ## exporter
         self.pq_convertstr = options.pop("convertallstrings", False)
         self.pq_hasnulls = options.pop("hasnulls", True)
-        self.pq_items_rowgroup = options.pop("items_rowgroup", 10000)
+        self.pq_no_items_batch = options.pop("no_items_batch", 10000)
         ## parquet
         self.pq_schema = options.pop("schema", None)
+        self.pq_row_group_size = options.pop("row_group_size", None)
         self.pq_version = options.pop("version", "2.6")
         self.pq_use_dictionary = options.pop("use_dictionary", True)
         self.pq_compression = options.pop("compression", "zstd")
@@ -164,7 +165,7 @@ class ParquetItemExporter(BaseItemExporter):
         if len(self.columns) == 0:
             self._init_table(item)
         # Create a new row group to write
-        if self.itemcount > self.pq_items_rowgroup:
+        if self.itemcount > self.pq_no_items_batch:
             self._flush_table()
         # Add the item to data frame
         self.df = pd.concat(
@@ -279,7 +280,7 @@ class ParquetItemExporter(BaseItemExporter):
                     store_decimal_as_integer=self.pq_store_decimal_as_integer,
                     use_content_defined_chunking=self.pq_use_content_defined_chunking,
                 )
-            self.writer.write_table(table)
+            self.writer.write_table(table, self.pq_row_group_size)
             # initialize new data frame for new row group
             self._reset_rowgroup()
 

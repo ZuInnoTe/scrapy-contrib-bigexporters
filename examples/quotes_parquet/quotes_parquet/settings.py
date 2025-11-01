@@ -27,8 +27,9 @@ FEEDS = {
         "item_export_kwargs": {
             "hasnulls": True,  # can contain nulls
             "convertallstrings": False,  # convert all values to string. recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
-            "items_rowgroup": 10000,  # how many items per rowgroup, should be several thousands, e.g. between 5,000 and 30,000. The more rows the higher the memory consumption and the better the compression on the final parquet file
+            "no_items_batch": 10000,  # how many items to append at once, should be several thousands, e.g. between 5,000 and 30,000. The more rows the higher the memory consumption and the better the compression on the final parquet file
             "schema": None,  # None = autodetect. Otherwise pyarrow.Schema (https://arrow.apache.org/docs/python/generated/pyarrow.Schema.html#pyarrow.Schema)
+            "row_group_size": None,  # Maximum number of rows in each written row group. If None, the row group size will be the minimum of the Table size (in rows) and 1024 * 1024.
             # See following options: https://arrow.apache.org/docs/python/generated/pyarrow.parquet.ParquetWriter.html
             "version": "2.6",
             "use_dictionary": True,

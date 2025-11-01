@@ -61,9 +61,9 @@ class TestParquetItemExporter(unittest.TestCase):
             file=self.file,
             hasnulls=True,
             convertallstrings=False,
-            items_rowgroup=10000,
+            no_items_batch=10000,
             compression="zstd",
-            compression_level=3
+            compression_level=3,
         )
         self.export_type_schema(itemExporter)
 
@@ -76,9 +76,9 @@ class TestParquetItemExporter(unittest.TestCase):
             file=self.file,
             hasnulls=True,
             convertallstrings=True,
-            items_rowgroup=10000,
+            no_items_batch=10000,
             compression="zstd",
-            compression_level=3
+            compression_level=3,
         )
         self.export_string_schema(itemExporter)
 
@@ -91,9 +91,9 @@ class TestParquetItemExporter(unittest.TestCase):
             file=self.file,
             hasnulls=True,
             convertallstrings=False,
-            items_rowgroup=3,
+            no_items_batch=3,
             compression="zstd",
-            compression_level=3
+            compression_level=3,
         )
         self.export_type_schema(itemExporter)
 
