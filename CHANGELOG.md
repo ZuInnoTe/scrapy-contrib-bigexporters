@@ -4,9 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.0.0] - 2025-11-01
 * Changed: Migrate from fastparquet to pyarrow (https://codeberg.org/ZuInnoTe/scrapy-contrib-bigexporters/issues/3). Note: Some names of options have been changed and there are now more options!
-* Changed: Removed code comments where the documentation contains the details
+* Changed: Migrate from pyorc to pyarrow (https://codeberg.org/ZuInnoTe/scrapy-contrib-bigexporters/issues/4).  Note: Some names of options have been changed and there are now more options!
+* Changed: Removed code comments where the documentation contains already all the details
 
 ## [0.6.1] - 2025-10-03
 * Added: Provide possibility to specify a location for an Iceberg table (only relevant if a scraper creates the table and it is not already given)

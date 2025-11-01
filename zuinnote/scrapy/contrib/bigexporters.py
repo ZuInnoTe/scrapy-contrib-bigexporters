@@ -49,6 +49,7 @@ except ImportError:
 # Orc
 try:
     import pyarrow
+    import pyarrow.orc
 
     SUPPORTED_EXPORTERS["orc"] = True
     logging.getLogger().info("Successfully imported pyarrow. Export to orc supported.")
@@ -187,7 +188,8 @@ class ParquetItemExporter(BaseItemExporter):
         Triggered when Scrapy ends exporting. Useful to shutdown threads, close files etc.
         """
         self._flush_table()
-        self.writer.close()
+        if self.writer is not None:
+            self.writer.close()
 
     def _get_columns(self, item):
         """
@@ -206,7 +208,7 @@ class ParquetItemExporter(BaseItemExporter):
         """
         # initialize columns
         self._get_columns(item)
-        self._reset_rowgroup()
+        self._reset_dataframe()
 
     def _get_df_from_item(self, item):
         """
@@ -226,7 +228,7 @@ class ParquetItemExporter(BaseItemExporter):
             return pd.DataFrame(row, index=[0]).astype(str)
         return pd.DataFrame.from_dict([row])
 
-    def _reset_rowgroup(self):
+    def _reset_dataframe(self):
         """
         Reset dataframe for writing
         """
@@ -244,7 +246,7 @@ class ParquetItemExporter(BaseItemExporter):
         if len(self.df.index) > 0:
             # reset written entries
             self.itemcount = 0
-            # write existing dataframe as rowgroup to parquet file
+            # write existing dataframe to parquet file
             table = pyarrow.Table.from_pandas(self.df)
             if self.writer is None:
                 if self.pq_schema is None:
@@ -281,7 +283,7 @@ class ParquetItemExporter(BaseItemExporter):
                 )
             self.writer.write_table(table, self.pq_row_group_size)
             # initialize new data frame for new row group
-            self._reset_rowgroup()
+            self._reset_dataframe()
 
 
 """
@@ -420,7 +422,7 @@ class OrcItemExporter(BaseItemExporter):
         super().__init__(**kwargs)
         self.file = file  # file name
         self.itemcount = 0  # initial item count
-        self.records = []  # record cache
+        self.columns = []  # columns to export
         self.logger = logging.getLogger()
         if SUPPORTED_EXPORTERS["orc"]:
             self._configure(kwargs, dont_fail=dont_fail)
@@ -434,32 +436,42 @@ class OrcItemExporter(BaseItemExporter):
         self.fields_to_export = options.pop("fields_to_export", None)
         self.export_empty_fields = options.pop("export_empty_fields", False)
         # Read settings
-        self.orc_compression = options.pop("compression", pyorc.CompressionKind.ZLIB)
-        self.orc_compressionstrategy = options.pop(
-            "compressionstrategy", pyorc.CompressionStrategy.SPEED
-        )
-        self.orc_blocksize = options.pop("blocksize", 65536)
-        self.orc_batchsize = options.pop("batchsize", 1024)
-        self.orc_stripesize = options.pop("stripesize", 67108864)
-        self.orc_recordcache = options.pop("recordcache", 10000)
+        ## exporter
         self.orc_convertstr = options.pop("convertallstrings", False)
-        self.orc_schemastring = options.pop("schemastring", "")
-        if self.orc_schemastring == "":
-            raise RuntimeError("No orc schema defined")
-        self.orc_bloomfiltercolumns = options.pop("bloomfiltercolumns", None)
-        self.orc_bloomfilterfpp = options.pop("bloomfilterfpp", 0.05)
-        self.orc_converters = options.pop("converters", None)
-        self.orc_metadata = options.pop("metadata", None)
+        self.orc_no_items_batch = options.pop("no_items_batch", 10000)
+        ## orc
+        self.orc_file_version = options.pop("file_version", "0.12")
+        self.orc_batch_size = options.pop("batch_size", 1024)
+        self.orc_stripe_size = options.pop("stripe_size", 64 * 1024 * 1024)
+        self.orc_compression = options.pop("compression", "zstd")
+        self.orc_compression_block_size = options.pop(
+            "compression_block_size", 64 * 1024
+        )
+        self.orc_compression_strategy = options.pop("compression_strategy", "speed")
+        self.orc_row_index_stride = options.pop("row_index_stride", 10000)
+        self.orc_padding_tolerance = options.pop("padding_tolerance", 0.0)
+        self.orc_dictionary_key_size_threshold = options.pop(
+            "dictionary_key_size_threshold", 0.0
+        )
+        self.orc_bloom_filter_columns = options.pop("bloom_filter_columns", None)
+        self.orc_bloom_filter_fpp = options.pop("bloom_filter_fpp", 0.05)
+        # Init writer
+        self.orc_writer = None
 
     def export_item(self, item):
         """
         Export a specific item to the file
         """
-        # flush cache to orc file
-        if self.itemcount > self.orc_recordcache:
+        # Initialize writer
+        if len(self.columns) == 0:
+            self._init_table(item)
+        # Create a new row group to write
+        if self.itemcount > self.orc_no_items_batch:
             self._flush_table()
-        itemrecord = self._get_dict_from_item(item)
-        self.records.append(itemrecord)
+        # Add the item to data frame
+        self.df = pd.concat(
+            [self.df if not self.df.empty else None, self._get_df_from_item(item)]
+        )
         self.itemcount += 1
         return item
 
@@ -469,21 +481,8 @@ class OrcItemExporter(BaseItemExporter):
         """
         if not SUPPORTED_EXPORTERS["orc"]:
             raise RuntimeError(
-                "Error: Cannot export to orc. Cannot import pyorc. Have you installed it?"
+                "Error: Cannot export to orc. Cannot import pyarrow. Have you installed it?"
             )
-        self.orcwriter = pyorc.Writer(
-            self.file,
-            schema=self.orc_schemastring,
-            batch_size=self.orc_batchsize,
-            stripe_size=self.orc_stripesize,
-            compression=self.orc_compression,
-            compression_strategy=self.orc_compressionstrategy,
-            compression_block_size=self.orc_blocksize,
-            bloom_filter_columns=self.orc_bloomfiltercolumns,
-            bloom_filter_fpp=self.orc_bloomfilterfpp,
-            struct_repr=pyorc.StructRepr.DICT,
-            converters=self.orc_converters,
-        )
 
     def finish_exporting(self):
         """
@@ -492,33 +491,86 @@ class OrcItemExporter(BaseItemExporter):
         # flush last items from records cache
         self._flush_table()
         # close any open file
-        self.orcwriter.close()
+        if self.orc_writer is not None:
+            self.orc_writer.close()
         self.file.close()
 
     def _flush_table(self):
         """
         Writes the current record cache to avro file
         """
-        if len(self.records) > 0:
-            # write cache to orc file
-            self.orcwriter.writerows(self.records)
-
+        if len(self.df.index) > 0:
             # reset written entries
             self.itemcount = 0
-            # initialize new record cache
-            self.records = []
+            # write existing dataframe as orc file
+            table = pyarrow.Table.from_pandas(self.df)
+            if self.orc_writer is None:
+                self.orc_writer = pyarrow.orc.ORCWriter(
+                    self.file.name,
+                    file_version=self.orc_file_version,
+                    batch_size=self.orc_batch_size,
+                    stripe_size=self.orc_stripe_size,
+                    compression=self.orc_compression,
+                    compression_block_size=self.orc_compression_block_size,
+                    compression_strategy=self.orc_compression_strategy,
+                    row_index_stride=self.orc_row_index_stride,
+                    padding_tolerance=self.orc_padding_tolerance,
+                    dictionary_key_size_threshold=self.orc_dictionary_key_size_threshold,
+                    bloom_filter_columns=self.orc_bloom_filter_columns,
+                    bloom_filter_fpp=self.orc_bloom_filter_fpp,
+                )
+            # write cache to orc file
+            self.orc_writer.write(table)
+            # initialize new data frame
+            self._reset_dataframe()
 
-    def _get_dict_from_item(self, item):
+    def _get_columns(self, item):
         """
-        Returns the columns and values from the item
+        Determines the columns of an item
         """
+        if isinstance(item, dict):
+            # for dicts try using fields of the first item
+            self.columns = list(item.keys())
+        else:
+            # use fields declared in Item
+            self.columns = list(item.fields.keys())
+
+    def _init_table(self, item):
+        """
+        Initializes table for parquet file
+        """
+        # initialize columns
+        self._get_columns(item)
+        self._reset_dataframe()
+
+    def _get_df_from_item(self, item):
+        """
+        Get the dataframe from item
+        """
+        row = {}
         fields = dict(
             self._get_serialized_fields(item, default_value="", include_empty=True)
         )
-        if self.orc_convertstr:
-            for column in fields:
-                fields[column] = str(fields.column)
-        return fields
+        for column in self.columns:
+            if self.orc_convertstr == True:
+                row[column] = str(fields.get(column, None))
+            else:
+                value = fields.get(column, None)
+                row[column] = value
+        if self.orc_convertstr == True:
+            return pd.DataFrame(row, index=[0]).astype(str)
+        return pd.DataFrame.from_dict([row])
+
+    def _reset_dataframe(self):
+        """
+        Reset dataframe for writing
+        """
+        if self.orc_convertstr == False:  # auto determine schema
+            # initialize df
+            self.df = pd.DataFrame(columns=self.columns)
+        else:
+            # initialize df with zero strings to derive correct schema
+            self.df = pd.DataFrame(columns=self.columns).astype(str)
 
 
 """

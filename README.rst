@@ -23,10 +23,10 @@ Requirements
 * Python 3.12+
 * Scrapy 2.13+
 * Works on Linux, Windows, macOS, BSD
-* Parquet export requires fastparquet 2024.1+
+* Parquet export requires pyarrow 22.00+
 * Avro export requires fastavro 1.12+
-* ORC export requires pyorc 0.10+
-* Iceberg export requires pyiceberg 0.10+
+* ORC export requires pyarrow 22.00+
+* Iceberg export requires pyiceberg 0.10+ and requires pyarrow 22.00+
 
 Install
 =======
@@ -49,7 +49,7 @@ Avro is a file format.
 
 Iceberg::
 
-    pip install pyiceberg pyarrow
+    pip install pyiceberg pyarrow pandas
 
 Iceberg is an open table format.
 
@@ -57,13 +57,13 @@ Note: Most likely you will need to add specific dependencies so that Iceberg wor
 
 ORC::
 
-    pip install pyorc
+    pip install pyarrow pandas
 
 ORC is a file format.
 
 Parquet::
 
-    pip install fastparquet
+    pip install pyarrow pandas
 
 Parquet is a file format.
 

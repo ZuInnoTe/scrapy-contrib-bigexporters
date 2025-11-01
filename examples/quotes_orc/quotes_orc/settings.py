@@ -12,9 +12,6 @@ BOT_NAME = "quotes_orc"
 SPIDER_MODULES = ["quotes_orc.spiders"]
 NEWSPIDER_MODULE = "quotes_orc.spiders"
 
-# import pyorc
-import pyorc
-
 # Custom orc feed exporter
 FEED_EXPORTERS = {
     "orc": "zuinnote.scrapy.contrib.bigexporters.OrcItemExporter"
@@ -27,18 +24,19 @@ FEEDS = {
         "encoding": "utf8",
         "store_empty": False,
         "item_export_kwargs": {
-            "compression": pyorc.CompressionKind.ZLIB,  # compression to be used in orc, see pyorc.CompressionKind (None = 0, ZLIB = 1, SNAPPY = 2 (package: python-snappy), LZO = 3 (package: lzo), LZ4 = 4 (package: lz4), ZSTD = 5 (package: zstandard), note: compression may require additional libraries
-            "compressionstrategy": pyorc.CompressionStrategy.SPEED,  # compression to be used in orc, see pyorc.CompressionStrategy (Speed = 0, COMPRESSION = 1)
-            "blocksize": 65536,  # block size of an ORC bloc
-            "batchsize": 1024,  # batch size
-            "stripesize": 67108864,  # stripe size
-            "recordcache": 10000,  # how many records should be written at once, the higher the better the compression, but the more memory is needed, potentially also bloom filter performance can be increased with higher values
-            "schemastring": "struct<text:string,author:array<string>,tags:array<string>>",  # Mandatory to specify schema. Please name your fields exactly like you name them in your items. See also https://pyorc.readthedocs.io/en/latest/api.html#pyorc.Struct
-            "convertallstrings": False,  # convert all values to string. recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
-            "bloomfiltercolumns": None,  # Define for which columns a bloom filter should be used (list). Bloom filters are very useful for performing access to columns containing few discrete values
-            "bloomfilterfpp": 0.05,  # False positives probability for bloom filters
-            "converters": None,  # Define converters, can be a dictionary, where the keys are pyorc.TypeKind and the values are subclasses of ORCConverter
-            "metadata": None,  # metadata to be added to ORC file value is bytes (e.g. (extra="info".encode() will lead to {'extra': b'info'}))
+            "no_items_batch": 10000,
+            "convertallstrings": False,
+            # "file_version": "0.12",
+            "batch_size": 1024,
+            "stripe_size": 64 * 1024 * 1024,
+            "compression": "zstd",
+            "compression_block_size": 64 * 1024,
+            "compression_strategy": "speed",
+            "row_index_stride": 10000,
+            "padding_tolerance": 0.0,
+            "dictionary_key_size_threshold": 0.0,
+            "bloom_filter_columns": None,
+            "bloom_filter_fpp": 0.05,
         },
     }
 }
