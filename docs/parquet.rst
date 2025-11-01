@@ -35,7 +35,6 @@ Example local file, e.g. data-quotes-2020-01-01T10-00-00.parquet::
           'encoding': 'utf8',
           'store_empty': False,
           'item_export_kwargs': {
-             'hasnulls': True,
              'convertallstrings': False,
              'no_items_batch': 10000,
              'compression': 'zstd',
@@ -52,7 +51,6 @@ Example s3 file, e.g. s3://mybucket/data-quotes-2020-01-01T10-00-00.parquet::
           'encoding': 'utf8',
           'store_empty': False,
           'item_export_kwargs': {
-             'hasnulls': True,
              'convertallstrings': False,
              'items_rowgroup': 10000,
              'compression': 'zstd',
@@ -78,9 +76,6 @@ Finally, you can define in the FEEDS settings various options in 'item_export_kw
    * - 'convertallstrings'
      - 'convertallstrings' : False
      - convert all values to string. recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
-   * - 'hasnulls'
-     - 'hasnulls' : True
-     - can contain nulls
    * - 'no_items_batch'
      - 'no_items_batch' : 10000
      - how many items to append to the parquet file at once, e.g. between 5,000 and 30,000. The more rows the higher the memory consumption and the better the compression on the final parquet file

@@ -59,7 +59,6 @@ class TestParquetItemExporter(unittest.TestCase):
         # create exporter
         itemExporter = ParquetItemExporter(
             file=self.file,
-            hasnulls=True,
             convertallstrings=False,
             no_items_batch=10000,
             compression="zstd",
@@ -74,7 +73,6 @@ class TestParquetItemExporter(unittest.TestCase):
         # create exporter
         itemExporter = ParquetItemExporter(
             file=self.file,
-            hasnulls=True,
             convertallstrings=True,
             no_items_batch=10000,
             compression="zstd",
@@ -89,7 +87,6 @@ class TestParquetItemExporter(unittest.TestCase):
         # create exporter
         itemExporter = ParquetItemExporter(
             file=self.file,
-            hasnulls=True,
             convertallstrings=False,
             no_items_batch=3,
             compression="zstd",

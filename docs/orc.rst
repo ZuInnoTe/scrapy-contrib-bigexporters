@@ -14,8 +14,7 @@ You can find an example on how to use it in a Scrapy project `here <../examples/
 General Guidelines
 ==================
 
-You need at least the library `pyorc <https://pypi.org/project/pyorc/>`_ to enable the Orc export. You may need additional libraries for special types of compression (see below).
-
+You need at least the library `pyarrow <https://pypi.org/project/pyarrow/>`_ to enable the Orc export. You can trim down the needed packages by installing `only a subset of pyarrow <https://arrow.apache.org/docs/python/install.html#dependencies>`_
 Please look carefully at the options below.
 
 Note: You need to specify a schema
@@ -37,14 +36,14 @@ Example local file, e.g. data-quotes-2020-01-01T10-00-00.orc::
           'encoding': 'utf8',
           'store_empty': False,
           'item_export_kwargs': {
+             'no_items_batch': 10000,
+             'convertallstrings': False,
              'compression': pyorc.CompressionKind.ZLIB,
              'compressionstrategy': pyorc.CompressionStrategy.SPEED,
              'blocksize': 65536,
              'batchsize': 1024,
              'stripesize': 67108864,
-             'recordcache': 10000,
              'schemastring': "",
-             'convertallstrings': False,
              'bloomfiltercolumns': None,
              'bloomfilterfpp': 0.05,
              'converters': None,

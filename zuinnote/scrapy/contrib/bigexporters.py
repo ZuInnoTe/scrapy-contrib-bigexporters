@@ -113,7 +113,6 @@ class ParquetItemExporter(BaseItemExporter):
         # Read settings
         ## exporter
         self.pq_convertstr = options.pop("convertallstrings", False)
-        self.pq_hasnulls = options.pop("hasnulls", True)
         self.pq_no_items_batch = options.pop("no_items_batch", 10000)
         ## parquet
         self.pq_schema = options.pop("schema", None)

@@ -25,7 +25,6 @@ FEEDS = {
         "encoding": "utf8",
         "store_empty": False,
         "item_export_kwargs": {
-            "hasnulls": True,  # can contain nulls
             "convertallstrings": False,  # convert all values to string. recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
             "no_items_batch": 10000,  # how many items to append at once, should be several thousands, e.g. between 5,000 and 30,000. The more rows the higher the memory consumption and the better the compression on the final parquet file
             "schema": None,  # None = autodetect. Otherwise pyarrow.Schema (https://arrow.apache.org/docs/python/generated/pyarrow.Schema.html#pyarrow.Schema)
