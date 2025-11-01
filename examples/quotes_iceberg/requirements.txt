@@ -1,3 +1,5 @@
 pyiceberg[s3fs,sql-sqlite]==0.10.0
+pyarrow==22.0.0
 Scrapy==2.13.3
-scrapy-contrib-bigexporters==0.6.1
+scrapy-contrib-bigexporters==1.0.0
+pandas
