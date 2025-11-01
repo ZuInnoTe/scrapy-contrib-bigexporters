@@ -1,3 +1,3 @@
-fastavro==1.12.0
+fastavro==1.12.1
 Scrapy==2.13.3
 scrapy-contrib-bigexporters==1.0.0
