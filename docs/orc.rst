@@ -81,7 +81,7 @@ Example S3 file, e.g. s3://mybucket/data-quotes-2020-01-01T10-00-00.orc::
 
 There are more storage backends, e.g. Google Cloud. See the documentation linked above.
 
-Finally, you can define in the FEEDS settings various options in 'item_export_kwargs' (and you need to at least define the schemastring)
+Finally, you can define in the FEEDS settings various options in 'item_export_kwargs'.
 
 .. list-table:: Options for Orc export
    :widths: 25 25 50
