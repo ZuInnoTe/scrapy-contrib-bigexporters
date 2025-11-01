@@ -35,14 +35,17 @@ iceberg = [
     "pyarrow"
 ]
 parquet = [
-    "fastparquet>=2024.11.0",
-    "pandas>=2.2.0"
+    "pyarrow>=22.0.0",
+    "pandas"
 ]
 orc = [
-    "pyorc>=0.10.0"
+    "pyarrow>=22.0.0",
+    "pandas"
 ]
 test = [
     "pyiceberg[sql-sqlite]>=0.10",
+    "pyarrow>=22.0.0",
+    "pandas",
     "coverage>=7.10",
     "tox>=4.30.0",
     "pytest>=8.4.0"

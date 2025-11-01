@@ -25,17 +25,39 @@ FEEDS = {
         "encoding": "utf8",
         "store_empty": False,
         "item_export_kwargs": {
-            "compression": "GZIP",  # compression to be used in Parquet, UNCOMPRESSED, GZIP, SNAPPY (package: python-snappy), LZO (package: lzo), BROTLI (package: brotli), LZ4 (package: lz4), ZSTD (package: zstandard) note: compression may require additional libraries
-            "times": "int64",  # type for times int64 or int96, spark is int96 only
             "hasnulls": True,  # can contain nulls
             "convertallstrings": False,  # convert all values to string. recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
-            "writeindex": False,  # write index as extra column
-            "objectencoding": "infer",  # schema of data
-            "rowgroupoffset": 50000000,  # offset row groups
             "items_rowgroup": 10000,  # how many items per rowgroup, should be several thousands, e.g. between 5,000 and 30,000. The more rows the higher the memory consumption and the better the compression on the final parquet file
+            "schema": None,  # None = autodetect. Otherwise pyarrow.Schema (https://arrow.apache.org/docs/python/generated/pyarrow.Schema.html#pyarrow.Schema)
+            # See following options: https://arrow.apache.org/docs/python/generated/pyarrow.parquet.ParquetWriter.html
+            "version": "2.6",
+            "use_dictionary": True,
+            "compression": "zstd",
+            "write_statistics": True,
+            "use_deprecated_int96_timestamps": None,
+            "coerce_timestamps": None,
+            "allow_truncated_timestamps": False,
+            "data_page_size": None,
+            "flavor": None,
+            "filesystem": None,
+            "compression_level": 3,
+            "use_byte_stream_split": False,
+            "column_encoding": None,
+            "data_page_version": "1.0",
+            "use_compliant_nested_type": True,
+            "encryption_properties": None,
+            "write_batch_size": None,
+            "dictionary_pagesize_limit": None,
+            "store_schema": True,
+            "write_page_index": False,
+            "write_page_checksum": False,
+            "sorting_columns": None,
+            "store_decimal_as_integer": False,
+            "use_content_defined_chunking": False,
         },
     }
 }
+
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 # USER_AGENT = 'quotes_parquet (+http://www.yourdomain.com)'
 

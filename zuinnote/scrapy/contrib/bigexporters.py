@@ -31,19 +31,31 @@ from scrapy.utils.project import get_project_settings
 import json
 import logging
 
+import pandas as pd
+
 SUPPORTED_EXPORTERS = {}
 ### Check which libraries are available for the exporters
+# Parquet
 try:
-    from fastparquet import write as fp_write
-    import pandas as pd
+    import pyarrow
+    import pyarrow.parquet as pq
 
     SUPPORTED_EXPORTERS["parquet"] = True
     logging.getLogger().info(
-        "Successfully imported fastparquet. Export to parquet supported."
+        "Successfully imported pyarrow.parquet. Export to parquet supported."
     )
 except ImportError:
     SUPPORTED_EXPORTERS["parquet"] = False
+# Orc
+try:
+    import pyarrow
 
+    SUPPORTED_EXPORTERS["orc"] = True
+    logging.getLogger().info("Successfully imported pyarrow. Export to orc supported.")
+except ImportError:
+    SUPPORTED_EXPORTERS["orc"] = False
+
+# Avro
 try:
     from fastavro import writer as fa_writer, parse_schema as fa_parse_schema
 
@@ -54,14 +66,7 @@ try:
 except ImportError:
     SUPPORTED_EXPORTERS["avro"] = False
 
-try:
-    import pyorc
-
-    SUPPORTED_EXPORTERS["orc"] = True
-    logging.getLogger().info("Successfully imported pyorc. Export to orc supported.")
-except ImportError:
-    SUPPORTED_EXPORTERS["orc"] = False
-
+# Iceberg
 try:
     import pyarrow
     import pyiceberg
@@ -106,14 +111,50 @@ class ParquetItemExporter(BaseItemExporter):
         self.fields_to_export = options.pop("fields_to_export", None)
         self.export_empty_fields = options.pop("export_empty_fields", False)
         # Read settings
-        self.pq_compression = options.pop("compression", "GZIP")
-        self.pq_times = options.pop("times", "int64")
-        self.pq_objectencoding = options.pop("objectencoding", "infer")
+        ## exporter
         self.pq_convertstr = options.pop("convertallstrings", False)
         self.pq_hasnulls = options.pop("hasnulls", True)
-        self.pq_writeindex = options.pop("writeindex", False)
         self.pq_items_rowgroup = options.pop("items_rowgroup", 10000)
-        self.pq_rowgroupoffset = options.pop("rowgroupoffset", 50000000)
+        ## parquet
+        self.pq_schema = options.pop("schema", None)
+        self.pq_version = options.pop("version", "2.6")
+        self.pq_use_dictionary = options.pop("use_dictionary", True)
+        self.pq_compression = options.pop("compression", "zstd")
+        self.pq_write_statistics = options.pop("write_statistics", True)
+        self.pq_use_deprecated_int96_timestamps = options.pop(
+            "use_deprecated_int96_timestamps", None
+        )
+        self.pq_coerce_timestamps = options.pop("coerce_timestamps", None)
+        self.pq_allow_truncated_timestamps = options.pop(
+            "allow_truncated_timestamps", False
+        )
+        self.pq_data_page_size = options.pop("data_page_size", None)
+        self.pq_flavor = options.pop("flavor", None)
+        self.pq_filesystem = options.pop("filesystem", None)
+        self.pq_compression_level = options.pop("compression_level", None)
+        self.pq_use_byte_stream_split = options.pop("use_byte_stream_split", False)
+        self.pq_column_encoding = options.pop("column_encoding", None)
+        self.pq_data_page_version = options.pop("data_page_version", "1.0")
+        self.pq_use_compliant_nested_type = options.pop(
+            "use_compliant_nested_type", True
+        )
+        self.pq_encryption_properties = options.pop("encryption_properties", None)
+        self.pq_write_batch_size = options.pop("write_batch_size", None)
+        self.pq_dictionary_pagesize_limit = options.pop(
+            "dictionary_pagesize_limit", None
+        )
+        self.pq_store_schema = options.pop("store_schema", True)
+        self.pq_write_page_index = options.pop("write_page_index", False)
+        self.pq_write_page_checksum = options.pop("write_page_checksum", False)
+        self.pq_sorting_columns = options.pop("sorting_columns", None)
+        self.pq_store_decimal_as_integer = options.pop(
+            "store_decimal_as_integer", False
+        )
+        self.pq_use_content_defined_chunking = options.pop(
+            "use_content_defined_chunking", False
+        )
+        # Init writer
+        self.writer = None
 
     def export_item(self, item):
         """
@@ -138,15 +179,15 @@ class ParquetItemExporter(BaseItemExporter):
         """
         if not SUPPORTED_EXPORTERS["parquet"]:
             raise RuntimeError(
-                "Error: Cannot export to parquet. Cannot import fastparquet. Have you installed it?"
+                "Error: Cannot export to parquet. Cannot import pyarrow.parquet. Have you installed it?"
             )
-        self.firstBlock = True  # first block of parquet file
 
     def finish_exporting(self):
         """
         Triggered when Scrapy ends exporting. Useful to shutdown threads, close files etc.
         """
         self._flush_table()
+        self.writer.close()
 
     def _get_columns(self, item):
         """
@@ -204,22 +245,41 @@ class ParquetItemExporter(BaseItemExporter):
             # reset written entries
             self.itemcount = 0
             # write existing dataframe as rowgroup to parquet file
-            papp = True
-            if self.firstBlock == True:
-                self.firstBlock = False
-                papp = False
-            fp_write(
-                self.file.name,
-                self.df,
-                append=papp,
-                compression=self.pq_compression,
-                has_nulls=self.pq_hasnulls,
-                write_index=self.pq_writeindex,
-                file_scheme="simple",
-                object_encoding=self.pq_objectencoding,
-                times=self.pq_times,
-                row_group_offsets=self.pq_rowgroupoffset,
-            )
+            table = pyarrow.Table.from_pandas(self.df)
+            if self.writer is None:
+                if self.pq_schema is None:
+                    schema = table.schema
+                else:
+                    schema = self.pq_schema
+                self.writer = pq.ParquetWriter(
+                    self.file.name,
+                    schema=schema,
+                    version=self.pq_version,
+                    use_dictionary=self.pq_use_dictionary,
+                    compression=self.pq_compression,
+                    write_statistics=self.pq_write_statistics,
+                    use_deprecated_int96_timestamps=self.pq_use_deprecated_int96_timestamps,
+                    coerce_timestamps=self.pq_coerce_timestamps,
+                    allow_truncated_timestamps=self.pq_allow_truncated_timestamps,
+                    data_page_size=self.pq_data_page_size,
+                    flavor=self.pq_flavor,
+                    filesystem=self.pq_filesystem,
+                    compression_level=self.pq_compression_level,
+                    use_byte_stream_split=self.pq_use_byte_stream_split,
+                    column_encoding=self.pq_column_encoding,
+                    data_page_version=self.pq_data_page_version,
+                    use_compliant_nested_type=self.pq_use_compliant_nested_type,
+                    encryption_properties=self.pq_encryption_properties,
+                    write_batch_size=self.pq_write_batch_size,
+                    dictionary_pagesize_limit=self.pq_dictionary_pagesize_limit,
+                    store_schema=self.pq_store_schema,
+                    write_page_index=self.pq_write_page_index,
+                    write_page_checksum=self.pq_write_page_checksum,
+                    sorting_columns=self.pq_sorting_columns,
+                    store_decimal_as_integer=self.pq_store_decimal_as_integer,
+                    use_content_defined_chunking=self.pq_use_content_defined_chunking,
+                )
+            self.writer.write_table(table)
             # initialize new data frame for new row group
             self._reset_rowgroup()
 
