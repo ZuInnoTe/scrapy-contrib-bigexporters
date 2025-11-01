@@ -46,7 +46,7 @@ test = [
     "pyiceberg[sql-sqlite]>=0.10",
     "pyarrow>=22.0.0",
     "pandas",
-    "coverage>=7.10",
+    "coverage>=7.11",
     "tox>=4.30.0",
     "pytest>=8.4.0"
 ]
