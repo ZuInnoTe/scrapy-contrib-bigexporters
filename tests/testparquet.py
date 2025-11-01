@@ -26,7 +26,11 @@ import datetime
 import os
 
 import scrapy
-from fastparquet import ParquetFile
+
+import numpy as np
+import pyarrow
+import pyarrow.parquet as pq
+
 from scrapy.loader import ItemLoader
 from zuinnote.scrapy.contrib.bigexporters import ParquetItemExporter
 from .testitem import TestItem
@@ -55,14 +59,11 @@ class TestParquetItemExporter(unittest.TestCase):
         # create exporter
         itemExporter = ParquetItemExporter(
             file=self.file,
-            compression="GZIP",
-            times="int64",
             hasnulls=True,
             convertallstrings=False,
-            writeindex=False,
-            objectencoding="infer",
-            rowgroupoffset=50000000,
             items_rowgroup=10000,
+            compression="zstd",
+            compression_level=3
         )
         self.export_type_schema(itemExporter)
 
@@ -73,14 +74,11 @@ class TestParquetItemExporter(unittest.TestCase):
         # create exporter
         itemExporter = ParquetItemExporter(
             file=self.file,
-            compression="GZIP",
-            times="int64",
             hasnulls=True,
             convertallstrings=True,
-            writeindex=False,
-            objectencoding="infer",
-            rowgroupoffset=50000000,
             items_rowgroup=10000,
+            compression="zstd",
+            compression_level=3
         )
         self.export_string_schema(itemExporter)
 
@@ -91,16 +89,12 @@ class TestParquetItemExporter(unittest.TestCase):
         # create exporter
         itemExporter = ParquetItemExporter(
             file=self.file,
-            compression="GZIP",
-            times="int64",
             hasnulls=True,
             convertallstrings=False,
-            writeindex=False,
-            objectencoding="infer",
-            rowgroupoffset=50000000,
             items_rowgroup=3,
+            compression="zstd",
+            compression_level=3
         )
-
         self.export_type_schema(itemExporter)
 
     def export_type_schema(self, itemExporter):
@@ -123,17 +117,18 @@ class TestParquetItemExporter(unittest.TestCase):
         self.file.close()
         # reread file and compare results
         rcount = 0
-        pf = ParquetFile(self.filename)
-        df = pf.to_pandas()
+        df = pq.read_pandas(self.filename).to_pandas()
         for indx, record in df.iterrows():
             self.assertEqual(
                 "this is a test text",
                 record.get("ftext", None),
                 msg="String data is read correctly",
             )
-            self.assertEqual(
-                ["test1", "test2", "test3", "test4"],
-                record.get("ftext_array", None),
+            self.assertIsNone(
+                np.testing.assert_array_equal(
+                    ["test1", "test2", "test3", "test4"],
+                    record.get("ftext_array", None),
+                ),
                 msg="String array data is read correctly",
             )
             self.assertEqual(
@@ -184,9 +179,7 @@ class TestParquetItemExporter(unittest.TestCase):
         self.file.close()
         # reread file and compare results
         rcount = 0
-        pf = ParquetFile(self.filename)
-        df = pf.to_pandas()
-
+        df = pq.read_pandas(self.filename).to_pandas()
         for indx, record in df.iterrows():
             self.assertEqual(
                 "this is a test text",
