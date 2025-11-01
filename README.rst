@@ -23,10 +23,10 @@ Requirements
 * Python 3.12+
 * Scrapy 2.13+
 * Works on Linux, Windows, macOS, BSD
-* Parquet export requires pyarrow 22.00+
+* Parquet export requires pyarrow 22.00+ and pandas
 * Avro export requires fastavro 1.12+
-* ORC export requires pyarrow 22.00+
-* Iceberg export requires pyiceberg 0.10+ and requires pyarrow 22.00+
+* ORC export requires pyarrow 22.00+ and pandas
+* Iceberg export requires pyiceberg 0.10+, pyarrow 22.00+ and pandas
 
 Install
 =======
