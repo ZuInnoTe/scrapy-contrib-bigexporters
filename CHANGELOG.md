@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Changed: Migrate from fastparquet to pyarrow (https://codeberg.org/ZuInnoTe/scrapy-contrib-bigexporters/issues/3). Note: Some names of options have been changed and there are now more options!
 * Changed: Migrate from pyorc to pyarrow (https://codeberg.org/ZuInnoTe/scrapy-contrib-bigexporters/issues/4).  Note: Some names of options have been changed and there are now more options!
 * Changed: Removed code comments where the documentation contains already all the details
+* Changed: Update minimal build dependencies: coverage >= 7.11, tox >=4.32.0
+
 
 ## [0.6.1] - 2025-10-03
 * Added: Provide possibility to specify a location for an Iceberg table (only relevant if a scraper creates the table and it is not already given)
