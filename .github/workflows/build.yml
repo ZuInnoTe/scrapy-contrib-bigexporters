@@ -18,7 +18,7 @@ jobs:
         run: python --version
       - name: Install environment
         run: | 
-          pip install flit==3.10.1
+          pip install flit==3.12.0
           flit install
       - name: Code formatting
         run: black --check .  
