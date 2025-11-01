@@ -83,6 +83,6 @@ Finally, you can define in the FEEDS settings various options in 'item_export_kw
      - 'row_group_size' : None
      - Maximum number of rows in each written row group. If None, the row group size will be the minimum of the Table size (in rows) and 1024 * 1024.    
    * - `pyarrow parquet options  <https://arrow.apache.org/docs/python/generated/pyarrow.parquet.ParquetWriter.html>`_
-     - same as for pyarrow ParquetWriter except compression which is set to zstd 
-     - You can define most of the pyarrow.Parquetwriter options. Just set the name of the option to the desired value. For example, "compression": "zstd". Note: Since scrapy-contrib-bigexporter the names have changed and are now the same as for pyarrow.ParquetWriter!
+     - same as for pyarrow.parquet.ParquetWriter except compression which is set to zstd 
+     - You can define most of the pyarrow.parquet.Parquetwriter options. Just set the name of the option to the desired value. For example, "compression": "zstd". Note: Since scrapy-contrib-bigexporter the names have changed and are now the same as for pyarrow.ParquetWriter!
 
