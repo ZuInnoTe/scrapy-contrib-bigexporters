@@ -86,6 +86,7 @@ Finally, you can define in the FEEDS settings various options in 'item_export_kw
 .. list-table:: Options for Orc export
    :widths: 25 25 50
    :header-rows: 1
+   
    * - Option
      - Default
      - Description
