@@ -16,7 +16,8 @@ General Guidelines
 
 Please look carefully at the options below.
 
-You need at least the library `fastparquet <https://pypi.org/project/fastparquet/>`_ to enable the Parquet export. You may need additional libraries for special types of compression (see below).
+You need at least the library `pyarrow <https://pypi.org/project/pyarrow/>`_ to enable the Parquet export. You can trim down the needed packages by installing `only a subset of pyarrow <https://arrow.apache.org/docs/python/install.html#dependencies>`_
+Please look carefully at the options below.
 
 
 Configuration
