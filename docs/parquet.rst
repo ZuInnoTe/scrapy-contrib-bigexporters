@@ -53,8 +53,7 @@ Example s3 file, e.g. s3://mybucket/data-quotes-2020-01-01T10-00-00.parquet::
           'store_empty': False,
           'item_export_kwargs': {
              'convertallstrings': False,
-             'items_rowgroup': 10000,
-              'no_items_batch': 10000,
+             'no_items_batch': 10000,
              'compression': 'zstd',
              'compression_level': 3
           },
