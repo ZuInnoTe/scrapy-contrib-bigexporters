@@ -126,14 +126,14 @@ In this example, we specify an Iceberg rest catalog and the data is stored in an
 
 Finally, you can define in the FEEDS settings various options in 'item_export_kwargs'
 
-.. list-table:: Options for Parquet export
+.. list-table:: Options for Iceberg export
    :widths: 25 25 50
    :header-rows: 1
 
    * - Option
      - Default
      - Description
-     * - 'convertallstrings'
+   * - 'convertallstrings'
      - 'convertallstrings' : False
      - convert all values to string. recommended for compatibility reasons, conversion to native types is suggested as part of the ingestion in the processing platform
    * - 'hasnulls'
