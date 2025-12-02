@@ -146,7 +146,7 @@ Finally, you can define in the FEEDS settings various options in 'item_export_kw
      - How many items should be included in each append call to an Iceberg table. The more you include the better is the performance of the table. Depending on how you configure the table (merge-on-read vs copy-on-write), you need to take into account certain maintenance jobs. If you use copy-on-write then writing is slower as during writes data files are merged. If you use merge-on-read then writing is faster, but you should regularly schedule `maintenance jobs  <https://iceberg.apache.org/docs/nightly/spark-procedures/#named-arguments>`_, such as rewrite_data_files, rewrite_manifests, remove_orphan_files
    * - 'iceberg_catalog'
      - 'iceberg_catalog': {}
-     - Configuration of iceberg catalog. Note: This configuration can be complex and has many supported variables (see `here  <https://py.iceberg.apache.org/configuration/>`_). **You need here to configure the catalog, table, data location etc.**
+     - Configuration of iceberg catalog. Note: This configuration can be complex and has many supported variables (see `here  <https://py.iceberg.apache.org/configuration/#catalogs>`_). **You need here to configure the catalog, table, data location etc.**
    * - 'iceberg_table'
      - 'iceberg_table': {
                     'name': 'default.scraping_data',
@@ -161,7 +161,7 @@ Finally, you can define in the FEEDS settings various options in 'item_export_kw
                     'create_if_not_exists': True,
                     'properties': {}
                 }
-     - Configuration of the namespace. You can configure the namespace in the catalog ('name') and the option 'create_if_not_exists', which if set to True, will create the namespace in the catalog if it does not exist. Otherwise it will reuse the existing namespace. Additionally you can specify the `namespace properties <https://py.iceberg.apache.org/configuration/#tables>`_ in case the namespace is created using the option 'properties', which expects a Python dictionary.
+     - Configuration of the namespace. You can configure the namespace in the catalog ('name') and the option 'create_if_not_exists', which if set to True, will create the namespace in the catalog if it does not exist. Otherwise it will reuse the existing namespace. Additionally you can specify the `namespace properties <https://py.iceberg.apache.org/reference/pyiceberg/catalog/#pyiceberg.catalog.Catalog.create_namespace_if_not_exists>`_ in case the namespace is created using the option 'properties', which expects a Python dictionary.
 
    
 Additional libraries
