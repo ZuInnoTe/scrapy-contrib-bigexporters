@@ -61,6 +61,8 @@ Example s3 file, e.g. s3://mybucket/data-quotes-2020-01-01T10-00-00.parquet::
   }
 
 
+Be aware that you should not use static credentials, such as secret key and access key, for accessing resources, such as S3, but machine identities such as AWS IAM Roles based on short-living tokens.
+
 Note: You can define many more options (see below), e.g. most of pyarrow.ParquetWriter
 
 There are more storage backends, e.g. Google Cloud. See the documentation linked above.
