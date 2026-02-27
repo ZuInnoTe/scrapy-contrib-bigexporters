@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+* Changed: Update Github Actions
+
 ## [1.0.0] - 2025-11-01
 * Changed: Migrate from fastparquet to pyarrow (https://codeberg.org/ZuInnoTe/scrapy-contrib-bigexporters/issues/3). Note: Some names of options have been changed and there are now more options!
 * Changed: Migrate from pyorc to pyarrow (https://codeberg.org/ZuInnoTe/scrapy-contrib-bigexporters/issues/4).  Note: Some names of options have been changed and there are now more options!
