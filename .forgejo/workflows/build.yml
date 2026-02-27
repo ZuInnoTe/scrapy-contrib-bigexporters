@@ -2,8 +2,7 @@ name: build
 on: [workflow_call]
 jobs:
   build:
-    container:
-       image: registry.opensuse.org/opensuse/bci/nodejs:latest
+    runs-on: ubuntu-latest
     environment: build
     steps:
       - name: Checkout code
