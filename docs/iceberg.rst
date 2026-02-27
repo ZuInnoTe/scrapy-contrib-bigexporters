@@ -144,6 +144,12 @@ Finally, you can define in the FEEDS settings various options in 'item_export_kw
    * - 'no_items_batch'
      - 'no_items_batch' : 10000
      - How many items should be included in each append call to an Iceberg table. The more you include the better is the performance of the table. Depending on how you configure the table (merge-on-read vs copy-on-write), you need to take into account certain maintenance jobs. If you use copy-on-write then writing is slower as during writes data files are merged. If you use merge-on-read then writing is faster, but you should regularly schedule `maintenance jobs  <https://iceberg.apache.org/docs/nightly/spark-procedures/#named-arguments>`_, such as rewrite_data_files, rewrite_manifests, remove_orphan_files
+   * - 'schema'
+     - 'schema' : None
+     - pyarrow schema to be used for Pandas to Pyarrow conversion
+   * - 'pyarrow_safe_schema'
+     - 'pyarrow_safe_schema' : True
+     - safe schema conversion from Pandas (see `here  <https://arrow.apache.org/docs/python/generated/pyarrow.Table.html#pyarrow.Table.from_pandas>`_)
    * - 'iceberg_catalog'
      - 'iceberg_catalog': {}
      - Configuration of iceberg catalog. Note: This configuration can be complex and has many supported variables (see `here  <https://py.iceberg.apache.org/configuration/#catalogs>`_). **You need here to configure the catalog, table, data location etc.**

@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 * Added: CI/CD: [Forgejo CI/CD pipeline](.forgejo/workflows/build.yml) for running job on codeberg.org
 * Changed: Update Github Actions
+* Changed: Pyarrow (Orc, Parquet, Iceberg): If schema (for pyarrow to Pandas conversion) is specified then do not auto-interfere Null types. Fixes: https://github.com/ZuInnoTe/scrapy-contrib-bigexporters/issues/10
+* Changed: Pyarrow (Orc, Parquet, Iceberg): Only if schema is specified: pyarrow_safe_schema (Default: True): safe schema conversion from Pandas (see [here](https://arrow.apache.org/docs/python/generated/pyarrow.Table.html#pyarrow.Table.from_pandas))
+
 
 ## [1.0.0] - 2025-11-01
 * Changed: Migrate from fastparquet to pyarrow (https://codeberg.org/ZuInnoTe/scrapy-contrib-bigexporters/issues/3). Note: Some names of options have been changed and there are now more options!

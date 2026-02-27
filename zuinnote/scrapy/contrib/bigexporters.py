@@ -116,6 +116,7 @@ class ParquetItemExporter(BaseItemExporter):
         self.pq_convertstr = options.pop("convertallstrings", False)
         self.pq_no_items_batch = options.pop("no_items_batch", 10000)
         ## parquet
+        self.pq_pyarrow_safe_schema = options.pop("pyarrow_safe_schema", True)
         self.pq_schema = options.pop("schema", None)
         self.pq_row_group_size = options.pop("row_group_size", None)
         self.pq_version = options.pop("version", "2.6")
@@ -247,7 +248,10 @@ class ParquetItemExporter(BaseItemExporter):
             # reset written entries
             self.itemcount = 0
             # write existing dataframe to parquet file
-            table = pyarrow.Table.from_pandas(self.df)
+            if self.pq_schema is not None:
+               table = pyarrow.Table.from_pandas(self.df, schema=self.pq_schema, safe=pq_pyarrow_safe_schema)
+            else:
+               table = pyarrow.Table.from_pandas(self.df)
             if self.writer is None:
                 if self.pq_schema is None:
                     schema = table.schema
@@ -436,6 +440,8 @@ class OrcItemExporter(BaseItemExporter):
         self.fields_to_export = options.pop("fields_to_export", None)
         self.export_empty_fields = options.pop("export_empty_fields", False)
         # Read settings
+        self.orc_pyarrow_safe_schema = options.pop("pyarrow_safe_schema", True)
+        self.orc_schema = options.pop("schema", None)
         ## exporter
         self.orc_convertstr = options.pop("convertallstrings", False)
         self.orc_no_items_batch = options.pop("no_items_batch", 10000)
@@ -503,6 +509,10 @@ class OrcItemExporter(BaseItemExporter):
             # reset written entries
             self.itemcount = 0
             # write existing dataframe as orc file
+            if self.orc_schema is not None:
+               table = pyarrow.Table.from_pandas(self.df, schema=self.orc_schema, safe=orc_pyarrow_safe_schema)
+            else:
+               table = pyarrow.Table.from_pandas(self.df)
             table = pyarrow.Table.from_pandas(self.df)
             if self.orc_writer is None:
                 self.orc_writer = pyarrow.orc.ORCWriter(
@@ -604,6 +614,8 @@ class IcebergItemExporter(BaseItemExporter):
         self.encoding = options.pop("encoding", None)
         self.fields_to_export = options.pop("fields_to_export", None)
         self.export_empty_fields = options.pop("export_empty_fields", False)
+        self.pyarrow_safe_schema = options.pop("pyarrow_safe_schema", True)
+        self.schema = options.pop("schema", None)
         # Read settings
         self.convertstr = options.pop("convertallstrings", False)
         self.no_items_batch = options.pop("no_items_batch", 10000)
@@ -769,6 +781,10 @@ class IcebergItemExporter(BaseItemExporter):
             self.totalitemcount += self.itemcount
             self.itemcount = 0
             # Convert to arrow
+            if self.schema is not None:
+               table = pyarrow.Table.from_pandas(self.df, schema=self.schema, safe=pyarrow_safe_schema)
+            else:
+               table = pyarrow.Table.from_pandas(self.df)
             arrow_table = pyarrow.Table.from_pandas(self.df)
             # check if table is loaded
             if self.pyiceberg_table is None:

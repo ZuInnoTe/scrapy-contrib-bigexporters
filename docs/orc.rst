@@ -96,6 +96,12 @@ Finally, you can define in the FEEDS settings various options in 'item_export_kw
    * - 'no_items_batch'
      - 'no_items_batch' : 10000
      - how many items to append to the orc file at once, e.g. between 5,000 and 30,000. The more rows the higher the memory consumption and the better the compression on the final orc file
+   * - 'schema'
+     - 'schema' : None
+     - pyarrow schema to be used for Pandas to Pyarrow conversion
+   * - 'pyarrow_safe_schema'
+     - 'pyarrow_safe_schema' : True
+     - safe schema conversion from Pandas (see `here  <https://arrow.apache.org/docs/python/generated/pyarrow.Table.html#pyarrow.Table.from_pandas>`_)
    * - `pyarrow orc options  <https://arrow.apache.org/docs/python/generated/pyarrow.orc.ORCWriter.html>`_
      - same as for pyarrow ORCWriter except compression which is set to zstd 
      - You can define most of the pyarrow.orc.ORCWriter options. Just set the name of the option to the desired value. For example, "compression": "zstd". Note: Since scrapy-contrib-bigexporter the names have changed and are now the same as for pyarrow.ORCWriter!

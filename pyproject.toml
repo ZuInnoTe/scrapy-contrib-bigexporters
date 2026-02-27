@@ -6,7 +6,7 @@ name = "scrapy-contrib-bigexporters"
 authors = [
     {name = "Jörn Franke", email = "oss@zuinnote.eu"},
 ]
-version = "1.0.0"
+version = "1.1.0"
 description = "Scrapy exporter for Big Data formats"
 readme = "README.rst"
 classifiers = ["Development Status :: 5 - Production/Stable",
@@ -47,7 +47,7 @@ test = [
     "pyarrow>=22.0.0",
     "pandas",
     "coverage>=7.11",
-    "tox>=4.30.0",
+    "tox>=4.32.0",
     "pytest>=8.4.0"
 ]
 doc = [

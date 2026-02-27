@@ -82,6 +82,9 @@ Finally, you can define in the FEEDS settings various options in 'item_export_kw
    * - 'no_items_batch'
      - 'no_items_batch' : 10000
      - how many items to append to the parquet file at once, e.g. between 5,000 and 30,000. The more rows the higher the memory consumption and the better the compression on the final parquet file
+   * - 'pyarrow_safe_schema'
+     - 'pyarrow_safe_schema' : True
+     - safe schema conversion from Pandas (see `here  <https://arrow.apache.org/docs/python/generated/pyarrow.Table.html#pyarrow.Table.from_pandas>`_)
    * - 'row_group_size'
      - 'row_group_size' : None
      - Maximum number of rows in each written row group. If None, the row group size will be the minimum of the Table size (in rows) and 1024 * 1024.    
