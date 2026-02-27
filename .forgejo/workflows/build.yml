@@ -13,9 +13,7 @@ jobs:
         uses: actions/setup-python@v6
         with:
             python-version: '3.12' 
-            architecture: 'x64' 
-            platform: 'linux'
-            platform_version: '24.04'
+            architecture: 'x64'
       - name: Show Python version
         run: python --version
       - name: Install environment
