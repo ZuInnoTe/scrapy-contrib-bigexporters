@@ -4,7 +4,6 @@ jobs:
   build:
     container:
        image: registry.opensuse.org/opensuse/bci/nodejs:latest
-    runs-on: codeberg-small-lazy
     environment: build
     steps:
       - name: Checkout code
