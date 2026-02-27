@@ -5,5 +5,4 @@ on:
         - '*'
 jobs: 
     build:
-      runs-on: codeberg-small-lazy
       uses: ./.forgejo/workflows/build.yml
