@@ -2,7 +2,6 @@ name: build
 on: [workflow_call]
 jobs:
   build:
-    runs-on: codeberg-small-lazy
     container:
        image: registry.opensuse.org/opensuse/bci/nodejs:latest
     environment: build
