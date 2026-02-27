@@ -249,9 +249,11 @@ class ParquetItemExporter(BaseItemExporter):
             self.itemcount = 0
             # write existing dataframe to parquet file
             if self.pq_schema is not None:
-               table = pyarrow.Table.from_pandas(self.df, schema=self.pq_schema, safe=pq_pyarrow_safe_schema)
+                table = pyarrow.Table.from_pandas(
+                    self.df, schema=self.pq_schema, safe=pq_pyarrow_safe_schema
+                )
             else:
-               table = pyarrow.Table.from_pandas(self.df)
+                table = pyarrow.Table.from_pandas(self.df)
             if self.writer is None:
                 if self.pq_schema is None:
                     schema = table.schema
@@ -510,9 +512,11 @@ class OrcItemExporter(BaseItemExporter):
             self.itemcount = 0
             # write existing dataframe as orc file
             if self.orc_schema is not None:
-               table = pyarrow.Table.from_pandas(self.df, schema=self.orc_schema, safe=orc_pyarrow_safe_schema)
+                table = pyarrow.Table.from_pandas(
+                    self.df, schema=self.orc_schema, safe=orc_pyarrow_safe_schema
+                )
             else:
-               table = pyarrow.Table.from_pandas(self.df)
+                table = pyarrow.Table.from_pandas(self.df)
             table = pyarrow.Table.from_pandas(self.df)
             if self.orc_writer is None:
                 self.orc_writer = pyarrow.orc.ORCWriter(
@@ -782,9 +786,11 @@ class IcebergItemExporter(BaseItemExporter):
             self.itemcount = 0
             # Convert to arrow
             if self.schema is not None:
-               table = pyarrow.Table.from_pandas(self.df, schema=self.schema, safe=pyarrow_safe_schema)
+                table = pyarrow.Table.from_pandas(
+                    self.df, schema=self.schema, safe=pyarrow_safe_schema
+                )
             else:
-               table = pyarrow.Table.from_pandas(self.df)
+                table = pyarrow.Table.from_pandas(self.df)
             arrow_table = pyarrow.Table.from_pandas(self.df)
             # check if table is loaded
             if self.pyiceberg_table is None:
