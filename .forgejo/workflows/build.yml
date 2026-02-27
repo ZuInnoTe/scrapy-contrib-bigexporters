@@ -1,0 +1,54 @@
+name: build
+on: [workflow_call]
+jobs:
+  build:
+    runs-on: codeberg-small-lazy
+    container:
+       image: registry.opensuse.org/opensuse/bci/nodejs:latest
+    environment: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+            python-version: '3.12' 
+            architecture: 'x64' 
+      - name: Show Python version
+        run: python --version
+      - name: Install environment
+        run: | 
+          pip install flit==3.12.0
+          flit install
+      - name: Code formatting
+        run: black --check .  
+      - name: Building library
+        run: |
+          export SOURCE_DATE_EPOCH=$(date +%s)
+          flit build
+      - name: Code analysis
+        run: prospector --profile .prospector.yaml --zero-exit > ./prospector.json
+      - name: Run unit test
+        run: |
+           coverage run -m unittest
+           coverage report
+           coverage json
+           coverage lcov
+      - name: Upload the build artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: build-artifact
+          path: |
+             ./dist
+          retention-days: 2
+      - name: Upload the build output
+        uses: actions/upload-artifact@v7
+        with:
+          name: build-output
+          path: |
+             ./prospector.json
+             ./coverage.json
+             ./coverage.lcov
+          retention-days: 2
